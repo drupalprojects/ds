@@ -11,6 +11,7 @@ use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Plugin\PluginFormInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Url;
 use Drupal\ds\Ds;
@@ -292,9 +293,11 @@ function ds_field_ui_layouts_validate($form, FormStateInterface $form_state) {
         $layout_form[$name] = $form[$name];
       }
     }
-    $layout_form_state = (new FormState())->setValues($form_state->getValue('layout_configuration', []));
-    // TODO
-    //$layout_plugin->validateConfigurationForm($layout_form, $layout_form_state);
+    if ($layout_plugin instanceof PluginFormInterface) {
+      $layout_form_state = (new FormState())->setValues($form_state->getValue('layout_configuration', []));
+      // TODO
+      //$layout_plugin->validateConfigurationForm($layout_form, $layout_form_state);
+    }
   }
 
   // Move the view modes so Field UI can handle them.
@@ -446,8 +449,10 @@ function ds_field_ui_layouts_save($form, FormStateInterface $form_state) {
         $layout_form[$name] = $form[$name];
       }
     }
-    $layout_form_state = (new FormState())->setValues($form_state->getValue('layout_configuration', []));
-    $layout_plugin->submitConfigurationForm($layout_form, $layout_form_state);
+    if ($layout_plugin instanceof PluginFormInterface) {
+      $layout_form_state = (new FormState())->setValues($form_state->getValue('layout_configuration', []));
+      $layout_plugin->submitConfigurationForm($layout_form, $layout_form_state);
+    }
 
     // Get the layout settings from the layout_plugin.
     $record['layout']['settings'] = $layout_plugin->getConfiguration();
@@ -770,34 +775,36 @@ function _ds_field_ui_table_layouts($entity_type, $bundle, $view_mode, array &$f
     /* @var \Drupal\Core\Layout\LayoutInterface $layout_plugin */
     $layout_plugin = \Drupal::service('plugin.manager.core.layout')->createInstance($layout['layout'], $layout['settings'] ?: []);
 
-    $layout_configuration_form = $layout_plugin->buildConfigurationForm([], $form_state);
+    if ($layout_plugin instanceof PluginFormInterface) {
+      $layout_configuration_form = $layout_plugin->buildConfigurationForm([], $form_state);
 
-    // Merge 'details' elements in 'additional_settings' group into the main
-    // form.
-    foreach (Element::children($layout_configuration_form) as $name) {
-      $element = $layout_configuration_form[$name];
-      if ($element['#type'] == 'details' && $element['#group'] == 'additional_settings') {
-        $form[$name] = $layout_configuration_form[$name];
-        unset($layout_configuration_form[$name]);
+      // Merge 'details' elements in 'additional_settings' group into the main
+      // form.
+      foreach (Element::children($layout_configuration_form) as $name) {
+        $element = $layout_configuration_form[$name];
+        if ($element['#type'] == 'details' && $element['#group'] == 'additional_settings') {
+          $form[$name] = $layout_configuration_form[$name];
+          unset($layout_configuration_form[$name]);
 
-        $form[$name]['#ds_layout_configuration'] = TRUE;
-        $form[$name]['#parents'] = ['layout_configuration', $name];
-        $form[$name]['#tree'] = TRUE;
+          $form[$name]['#ds_layout_configuration'] = TRUE;
+          $form[$name]['#parents'] = ['layout_configuration', $name];
+          $form[$name]['#tree'] = TRUE;
 
-        if ($layout['layout'] === 'ds_reset') {
-          $form[$name]['#access'] = FALSE;
+          if ($layout['layout'] === 'ds_reset') {
+            $form[$name]['#access'] = FALSE;
+          }
         }
       }
-    }
 
-    // If anything is left, then we put it on it's own vertial tab.
-    if (!Element::isEmpty($layout_configuration_form)) {
-      $form['layout_configuration'] = array_merge($layout_configuration_form, [
-        '#group' => 'additional_settings',
-        '#type' => 'details',
-        '#title' => t('Layout settings'),
-        '#tree' => TRUE,
-      ]);
+      // If anything is left, then we put it on it's own vertial tab.
+      if (!Element::isEmpty($layout_configuration_form)) {
+        $form['layout_configuration'] = array_merge($layout_configuration_form, [
+          '#group' => 'additional_settings',
+          '#type' => 'details',
+          '#title' => t('Layout settings'),
+          '#tree' => TRUE,
+        ]);
+      }
     }
   }
   else {
