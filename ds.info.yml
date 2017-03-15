@@ -5,7 +5,7 @@ core: 8.x
 package: 'Display Suite'
 configure: ds.structure
 dependencies:
-  - layout_discovery
+  - drupal:layout_discovery
   - drupal:system (>= 8.3.x)
 test_dependencies:
-  - field_group
+  - field_group:field_group

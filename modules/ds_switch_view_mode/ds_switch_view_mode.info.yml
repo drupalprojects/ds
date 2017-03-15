@@ -4,4 +4,4 @@ description: 'Allows you to switch entity display per node on the node form.'
 core: 8.x
 package: 'Display Suite'
 dependencies:
-  - ds
+  - ds:ds

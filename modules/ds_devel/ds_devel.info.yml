@@ -4,5 +4,5 @@ description: 'Development functionality for Display Suite.'
 core: 8.x
 package: 'Display Suite'
 dependencies:
-  - ds
-  - devel
+  - ds:ds
+  - devel:devel
