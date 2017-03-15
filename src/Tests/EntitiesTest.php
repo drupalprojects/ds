@@ -158,8 +158,9 @@ class EntitiesTest extends FastTestBase {
     $this->drupalPostForm('node/' . $node->id() . '/edit', $edit, t('Save and keep published'));
 
     // Verify the revision is created.
-    $this->drupalGet('node/' . $node->id() . '/revisions');
-    $this->assertText('Test revision');
+    $node = \Drupal::entityTypeManager()->getStorage('node')->load($node->id());
+    $revision = \Drupal::entityTypeManager()->getStorage('node')->loadRevision($node->getRevisionId());
+    $this->assertEqual($revision->revision_log->value, 'Test revision');
 
     // Assert revision is using 2 col template.
     $this->drupalGet('node/' . $node->id() . '/revisions/1/view');
