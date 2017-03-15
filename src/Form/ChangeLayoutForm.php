@@ -172,7 +172,6 @@ class ChangeLayoutForm extends FormBase {
     if ($library = $new_layout->getLibrary()) {
       $third_party_settings['layout']['library'] = $library;
     }
-    $third_party_settings['layout']['path'] = $new_layout->getPath();
     unset($third_party_settings['regions']);
 
     // Map old regions to new ones.
