@@ -193,12 +193,13 @@ class EntitiesTest extends FastTestBase {
     $this->assertText('Tag 1');
     $this->assertNoText('Tag 2');
 
-    // Test \Drupal\Component\Utility\Html::escape() on ds_render_field() with
-    // the title field.
+    // Tests using the title field
     $edit = array(
       'fields[node_title][region]' => 'right',
     );
     $this->dsConfigureUi($edit, 'admin/structure/types/manage/article/display');
+
+    // Test \Drupal\Component\Utility\Html::escape() on ds_render_field().
     $edit = array(
       'title[0][value]' => 'Hi, I am an article <script>alert(\'with a javascript tag in the title\');</script>',
     );
@@ -206,6 +207,12 @@ class EntitiesTest extends FastTestBase {
     $this->drupalGet('node/' . $node->id());
     $xpath = $this->xpath('//div[@class="field field--name-node-title field--type-ds field--label-hidden field__item"]/h2');
     $this->assertTrimEqual($xpath[0], 'Hi, I am an article <script>alert(\'with a javascript tag in the title\');</script>');
+
+    // Test previews while using a ds field.
+    $title_key = 'title[0][value]';
+    $edit = [$title_key => $this->randomMachineName()];
+    $this->drupalPostForm('node/add/article', $edit, t('Preview'));
+    $this->assertText($edit[$title_key], 'Title visible in preview');
   }
 
 }

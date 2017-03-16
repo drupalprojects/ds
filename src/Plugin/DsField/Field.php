@@ -51,9 +51,17 @@ abstract class Field extends DsFieldBase {
 {% endif %}
 TWIG;
 
-    $entity_url = $this->entity()->toUrl();
-    if (!empty($config['link class'])) {
-      $entity_url->setOption('attributes', ['class' => explode(' ', $config['link class'])]);
+    // Sometimes it can be impossible to make a link to the entity, because it
+    // has no id as it has not yet been saved, e.g. when previewing an unsaved
+    // inline entity form.
+    $is_link = FALSE;
+    $entity_url = NULL;
+    if (!empty($this->entity()->id())) {
+      $is_link = !empty($config['link']);
+      $entity_url = $this->entity()->toUrl();
+      if (!empty($config['link class'])) {
+        $entity_url->setOption('attributes', ['class' => explode(' ', $config['link class'])]);
+      }
     }
 
     // Build the attributes
@@ -66,10 +74,10 @@ TWIG;
       '#type' => 'inline_template',
       '#template' => $template,
       '#context' => [
-        'is_link' => !empty($config['link']),
+        'is_link' => $is_link,
         'wrapper' => !empty($config['wrapper']) ? $config['wrapper'] : '',
         'attributes' =>  $attributes,
-        'entity_url' => $this->entity()->toUrl(),
+        'entity_url' => $entity_url,
         'output' => $output,
       ],
     ];
