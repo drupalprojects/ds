@@ -18,7 +18,6 @@ use Drupal\ds\Ds;
 use Drupal\ds\Plugin\DsField\DsFieldInterface;
 use Drupal\field\FieldConfigInterface;
 use Drupal\field_ui\FieldUI;
-use Drupal\layout_plugin\Layout;
 
 /**
  * Adds the Display Suite fields and layouts to the form.
