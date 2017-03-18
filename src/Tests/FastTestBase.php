@@ -74,7 +74,7 @@ abstract class FastTestBase extends WebTestBase {
   /**
    * The created user.
    *
-   * @var User
+   * @var \Drupal\user\UserInterface
    */
   protected $adminUser;
 
