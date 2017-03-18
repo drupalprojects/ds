@@ -147,3 +147,12 @@ function ds_switch_view_mode_form_node_form_alter(&$form, FormStateInterface $fo
 function ds_switch_view_mode_switch_view_mode_preview_callback($form, $form_state) {
   return $form['ds_switch_view_mode']['preview'];
 }
+
+/**
+ * Implements hook_panelizer_pre_view_builder_alter().
+ */
+function ds_switch_view_mode_panelizer_pre_view_builder_alter(&$view_mode, EntityInterface $entity, &$langcode) {
+  if ($entity->getEntityTypeId() == 'node' && node_is_page($entity) && !empty($entity->ds_switch->value) && $view_mode == 'full') {
+    $view_mode = $entity->ds_switch->value;
+  }
+}
