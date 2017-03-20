@@ -101,6 +101,21 @@ class LayoutPluginTest extends FastTestBase {
 
     // Check we don't have empty wrappers.
     $this->assertNoRaw('<>', 'No empty wrappers found');
+
+    // Select 1 col wrapper.
+    $assert = array(
+      'regions' => array(
+        'ds_content' => '<td colspan="8">' . t('Content') . '</td>',
+      ),
+    );
+    $this->dsSelectLayout(['layout' => 'ds_1col'], $assert);
+
+    // Go to the node.
+    $this->drupalGet('node/' . $node->id());
+
+    // Check we don't have empty wrappers.
+    $this->assertRaw('ds-1col');
+    $this->assertNoRaw('<>', 'No empty wrappers found');
   }
 
 }
