@@ -34,6 +34,10 @@ class EntitiesTest extends FastTestBase {
     \Drupal::configFactory()->getEditable('ds.settings')
       ->set('field_template', TRUE)
       ->save();
+
+    $this->container->get('theme_installer')->install(['ds_test_layout_theme']);
+    $config = \Drupal::configFactory()->getEditable('system.theme');
+    $config->set('default', 'ds_test_layout_theme')->save();
   }
 
   /**
@@ -213,6 +217,29 @@ class EntitiesTest extends FastTestBase {
     $edit = [$title_key => $this->randomMachineName()];
     $this->drupalPostForm('node/add/article', $edit, t('Preview'));
     $this->assertText($edit[$title_key], 'Title visible in preview');
+
+    // Convert layout from test theme.
+    // Configure teaser layout.
+    $test_theme_template = array(
+      'layout' => 'ds_test_layout_theme',
+    );
+    $test_theme_template_assert = array(
+      'regions' => array(
+        'ds_content' => '<td colspan="8">' . t('Content') . '</td>',
+      ),
+    );
+    $this->dsSelectLayout($test_theme_template, $test_theme_template_assert, 'admin/structure/types/manage/page/display');
+    // Tests using the title field
+    $edit = array(
+      'fields[node_title][region]' => 'ds_content',
+    );
+    $this->dsConfigureUi($edit, 'admin/structure/types/manage/page/display');
+    $node = $this->drupalCreateNode(['type' => 'page']);
+    $this->drupalGet('node/' . $node->id());
+    $this->assertRaw('test-template-defined-in-theme-class');
+    $this->assertText($node->get('body')->value);
+    $this->assertRaw('div class="ds-content-wrapper"');
+
   }
 
 }

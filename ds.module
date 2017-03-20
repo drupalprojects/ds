@@ -87,6 +87,12 @@ function ds_theme_registry_alter(&$theme_registry) {
   // layout is using the Display Suite layout class.
   foreach ($theme_registry as $theme_hook => $info) {
     if (in_array($theme_hook, $layout_theme_hooks) || (!empty($info['base hook']) && in_array($info['base hook'], $layout_theme_hooks))) {
+
+      // @todo Remove once https://www.drupal.org/node/2861840 is resolved.
+      if (!in_array('template_preprocess_layout', $theme_registry[$theme_hook]['preprocess functions'])) {
+        $theme_registry[$theme_hook]['preprocess functions'][] = 'template_preprocess_layout';
+      }
+
       $theme_registry[$theme_hook]['preprocess functions'][] = 'ds_preprocess_ds_layout';
     }
   }
