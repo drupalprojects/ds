@@ -78,7 +78,7 @@ function ds_theme_registry_alter(&$theme_registry) {
   $layout_theme_hooks = [];
   /** @var \Drupal\Core\Layout\LayoutDefinition $info */
   foreach ($layouts as $info) {
-    if ($info->getClass() == DsLayout::class) {
+    if (is_a($info->getClass(), DsLayout::class, TRUE)) {
       $layout_theme_hooks[] = $info->getThemeHook();
     }
   }
