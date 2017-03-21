@@ -294,6 +294,7 @@ function template_preprocess_ds_entity_view(&$variables) {
   unset($build['#render_children']);
   unset($build['#prefix']);
   unset($build['#suffix']);
+  unset($build['#attached']['html_head_link']);
 
   // Create region variables based on the layout settings.
   $use_field_names = \Drupal::config('ds.settings')->get('use_field_names');
