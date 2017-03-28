@@ -83,7 +83,7 @@ class DynamicCopyField extends DsFieldBase {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array();
+    return [];
   }
 
   /**

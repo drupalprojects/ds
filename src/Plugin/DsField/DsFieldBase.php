@@ -35,28 +35,28 @@ abstract class DsFieldBase extends PluginBase implements DsFieldInterface {
    * {@inheritdoc}
    */
   public function build() {
-    return array();
+    return [];
   }
 
   /**
    * {@inheritdoc}
    */
   public function settingsForm($form, FormStateInterface $form_state) {
-    return array();
+    return [];
   }
 
   /**
    * {@inheritdoc}
    */
   public function settingsSummary($settings) {
-    return array();
+    return [];
   }
 
   /**
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array();
+    return [];
   }
 
   /**
@@ -77,7 +77,7 @@ abstract class DsFieldBase extends PluginBase implements DsFieldInterface {
    * {@inheritdoc}
    */
   public function formatters() {
-    return array();
+    return [];
   }
 
   /**
@@ -168,7 +168,7 @@ abstract class DsFieldBase extends PluginBase implements DsFieldInterface {
    */
   public function calculateDependencies() {
     // By default there are no dependencies.
-    return array();
+    return [];
   }
 
   /**

@@ -19,13 +19,13 @@ class BlockFieldPluginTest extends FastTestBase {
    *
    * @var array
    */
-  public static $modules = array(
+  public static $modules = [
     'node',
     'block',
     'ds',
     'ds_test',
     'views',
-  );
+  ];
 
   /**
    * Views used by this test.
@@ -33,7 +33,7 @@ class BlockFieldPluginTest extends FastTestBase {
    * @var array
    *   The list of views.
    */
-  public static $testViews = array('ds-testing');
+  public static $testViews = ['ds-testing'];
 
   /**
    * {@inheritdoc}
@@ -46,7 +46,7 @@ class BlockFieldPluginTest extends FastTestBase {
       $this->container->get("plugin.manager.views.$plugin_type")->clearCachedDefinitions();
     }
 
-    ViewTestData::createTestViews(get_class($this), array('ds_test'));
+    ViewTestData::createTestViews(get_class($this), ['ds_test']);
   }
 
   /**
@@ -54,12 +54,12 @@ class BlockFieldPluginTest extends FastTestBase {
    */
   public function testBlockFieldTitleOverride() {
     // Block fields.
-    $edit = array(
+    $edit = [
       'name' => 'Test block title field',
       'id' => 'test_block_title_field',
       'entities[node]' => '1',
       'block' => 'views_block:ds_testing-block_1',
-    );
+    ];
 
     $this->dsCreateBlockField($edit);
 
@@ -69,17 +69,17 @@ class BlockFieldPluginTest extends FastTestBase {
     $this->drupalGet('admin/structure/types/manage/article/display');
     $this->assertRaw('fields[dynamic_block_field:node-test_block_title_field][weight]', t('Test block field found on node article.'));
 
-    $fields = array(
+    $fields = [
       'fields[dynamic_block_field:node-test_block_title_field][region]' => 'left',
       'fields[dynamic_block_field:node-test_block_title_field][label]' => 'above',
       'fields[body][region]' => 'right',
-    );
+    ];
 
     $this->dsSelectLayout();
     $this->dsConfigureUi($fields);
 
     // Create a node.
-    $settings = array('type' => 'article', 'promote' => 1);
+    $settings = ['type' => 'article', 'promote' => 1];
     $node = $this->drupalCreateNode($settings);
 
     // Look at node and verify the block title is overridden.
@@ -87,9 +87,9 @@ class BlockFieldPluginTest extends FastTestBase {
     $this->assertRaw('Test block title field', t('Default field label.'));
 
     // Update testing label.
-    $edit = array(
+    $edit = [
       'use_block_title' => '1',
-    );
+    ];
     $this->drupalPostForm('admin/structure/ds/fields/manage_block/test_block_title_field', $edit, t('Save'));
     $this->assertText(t('The field Test block title field has been saved'), t('Test field label override updated'));
 

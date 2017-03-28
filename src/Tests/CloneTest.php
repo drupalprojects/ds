@@ -16,13 +16,13 @@ class CloneTest extends FastTestBase {
    *
    * @var array
    */
-  public static $modules = array(
+  public static $modules = [
     'node',
     'user',
     'comment',
     'field_ui',
     'ds',
-  );
+  ];
 
   /**
    * Test adding a cloning a layout.

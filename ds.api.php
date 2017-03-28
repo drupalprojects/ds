@@ -65,7 +65,7 @@ function hook_ds_field_format_summary(array $field) {
  *   The form_state values.
  */
 function hook_ds_layout_settings_alter(array $record, \Drupal\Core\Form\FormStateInterface $form_state) {
-  $record['layout']['settings']['classes'] = array('layout-class');
+  $record['layout']['settings']['classes'] = ['layout-class'];
 }
 
 /**
@@ -83,7 +83,7 @@ function hook_ds_layout_settings_alter(array $record, \Drupal\Core\Form\FormStat
  *   All variables available for render. You can use this to add css classes.
  */
 function hook_ds_pre_render_alter(array &$layout_render_array, array $context, array &$vars) {
-  $layout_render_array['left'][] = array('#markup' => 'cool!', '#weight' => 20);
+  $layout_render_array['left'][] = ['#markup' => 'cool!', '#weight' => 20];
   $vars['attributes']['class'][] = 'custom';
 }
 
@@ -101,10 +101,10 @@ function hook_ds_pre_render_alter(array &$layout_render_array, array $context, a
  */
 function hook_ds_layout_region_alter(array $context, array &$region_info) {
   $region_info['region_options']['my_region'] = 'New region';
-  $region_info['table_regions']['my_region'] = array(
+  $region_info['table_regions']['my_region'] = [
     'title' => \Drupal\Component\Utility\Html::escape('New region'),
     'message' => t('No fields are displayed in this region'),
-  );
+  ];
 }
 
 /**
@@ -168,10 +168,10 @@ function hook_ds_views_row_render_entity(\Drupal\Core\Entity\EntityInterface $en
  */
 function hook_ds_views_row_render_entity_alter(array &$build, array $context) {
   // You can do whatever you want to here.
-  $build['data'] = array(
+  $build['data'] = [
     '#markup' => 'Sample text',
     '#weight' => 20,
-  );
+  ];
 }
 
 /**

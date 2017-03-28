@@ -14,18 +14,18 @@ class RdfTest extends FastTestBase {
    *
    * @var array
    */
-  public static $modules = array(
+  public static $modules = [
     'node',
     'field_ui',
     'ds',
     'rdf'
-  );
+  ];
 
   /**
    * Test rdf integration.
    */
   public function testRdf() {
-    \Drupal::service('module_installer')->install(array('ds_test_rdf'));
+    \Drupal::service('module_installer')->install(['ds_test_rdf']);
 
     /* @var \Drupal\node\NodeInterface $node */
     $node = $this->entitiesTestSetup();

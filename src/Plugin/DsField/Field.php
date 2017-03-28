@@ -34,7 +34,7 @@ abstract class Field extends DsFieldBase {
     }
 
     if (empty($output)) {
-      return array();
+      return [];
     }
 
     $template = <<<TWIG

@@ -14,9 +14,9 @@ class FieldPluginTest extends FastTestBase {
    */
   public function testFieldPlugin() {
     // Rename the title field.
-    $edit = array(
+    $edit = [
       'title_label' => 'alternative article title',
-    );
+    ];
     $this->drupalPostForm('admin/structure/types/manage/article', $edit, t('Save content type'));
 
     $this->dsSelectLayout();
@@ -27,8 +27,8 @@ class FieldPluginTest extends FastTestBase {
     // One is altered by hook_ds_fields_info_alter()
     $this->assertText('Field altered', 'Test field altered found on node.');
 
-    $empty = array();
-    $edit = array('layout' => 'ds_2col_stacked');
+    $empty = [];
+    $edit = ['layout' => 'ds_2col_stacked'];
     $this->dsSelectLayout($edit, $empty, 'admin/config/people/accounts/display');
 
     // Fields can not be found on user.
@@ -39,7 +39,7 @@ class FieldPluginTest extends FastTestBase {
     // Select layout.
     $this->dsSelectLayout();
 
-    $fields = array(
+    $fields = [
       'fields[node_title][region]' => 'right',
       'fields[node_title][label]' => 'inline',
       'fields[node_author][region]' => 'left',
@@ -61,13 +61,13 @@ class FieldPluginTest extends FastTestBase {
       'fields[test_field_zero_string][label]' => 'inline',
       'fields[test_field_zero_float][region]' => 'right',
       'fields[test_field_zero_float][label]' => 'inline',
-    );
+    ];
 
     $this->dsSelectLayout();
     $this->dsConfigureUi($fields);
 
     // Create a node.
-    $settings = array('type' => 'article');
+    $settings = ['type' => 'article'];
     $node = $this->drupalCreateNode($settings);
     $this->drupalGet('node/' . $node->id());
 

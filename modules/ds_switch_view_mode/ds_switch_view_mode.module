@@ -18,7 +18,7 @@ use Drupal\ds\Ds;
 function ds_switch_view_mode_entity_base_field_info(EntityTypeInterface $entity_type) {
   if ($entity_type->id() == 'node') {
     // Add the switch field as a base field.
-    $fields = array();
+    $fields = [];
 
     $fields['ds_switch'] = BaseFieldDefinition::create('string')
       ->setLabel(t('DS switch'))
@@ -26,7 +26,7 @@ function ds_switch_view_mode_entity_base_field_info(EntityTypeInterface $entity_
       ->setRevisionable(TRUE)
       ->setDescription(t('Holds the DS view mode of the node.'))
       ->setSetting('default_value', '')
-      ->setPropertyConstraints('value', array('Length' => array('max' => 60)));
+      ->setPropertyConstraints('value', ['Length' => ['max' => 60]]);
 
     return $fields;
   }
@@ -56,8 +56,8 @@ function ds_switch_view_mode_form_node_form_alter(&$form, FormStateInterface $fo
   if (\Drupal::currentUser()->hasPermission('ds switch ' . $node->bundle()) || \Drupal::currentUser()->hasPermission('ds switch view mode')) {
     // Get the view modes.
     $ds_vm = \Drupal::service('entity_display.repository')->getViewModes('node');
-    $layouts = array();
-    $options = array('' => t('Default'));
+    $layouts = [];
+    $options = ['' => t('Default')];
     foreach ($ds_vm as $key => $item) {
       $overridden = FALSE;
       $entity_display = EntityViewDisplay::load('node.' . $node->bundle() . '.' . $key);
@@ -78,32 +78,32 @@ function ds_switch_view_mode_form_node_form_alter(&$form, FormStateInterface $fo
     if (count($options) > 1) {
 
       if (!isset($form['ds_switch_view_mode'])) {
-        $form['ds_switch_view_mode'] = array(
+        $form['ds_switch_view_mode'] = [
           '#type' => 'details',
           '#title' => t('Display settings'),
           '#weight' => 100,
           '#group' => 'advanced',
-        );
+        ];
       }
 
-      $form['ds_switch_view_mode']['ds_switch'] = array(
+      $form['ds_switch_view_mode']['ds_switch'] = [
         '#type' => 'select',
         '#title' => t('View mode'),
         '#options' => $options,
         '#default_value' => $node->ds_switch->value,
         '#description' => t('Switch to a different view mode to display the full page view of this node.'),
         '#weight' => -1,
-        '#ajax' => array(
+        '#ajax' => [
           'callback' => 'ds_switch_view_mode_switch_view_mode_preview_callback',
           'wrapper' => 'ds_switch_preview_wrapper',
-        ),
-      );
+        ],
+      ];
 
-      $form['ds_switch_view_mode']['preview'] = array(
+      $form['ds_switch_view_mode']['preview'] = [
         '#type' => 'container',
         '#prefix' => '<div id="ds_switch_preview_wrapper">',
         '#suffix' => '</div>',
-      );
+      ];
 
       $mode = $form_state->getValue('ds_switch');
       if (!$mode) {
@@ -134,9 +134,9 @@ function ds_switch_view_mode_form_node_form_alter(&$form, FormStateInterface $fo
       else {
         $image = $fallback_image;
       }
-      $form['ds_switch_view_mode']['preview']['image'] = array(
+      $form['ds_switch_view_mode']['preview']['image'] = [
         '#markup' => '<div class="ds-layout-preview-image"><img src="' . base_path() . $image . '"/></div>',
-      );
+      ];
     }
   }
 }

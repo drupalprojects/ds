@@ -15,12 +15,12 @@ class JavascriptTest extends JavascriptTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = array(
+  public static $modules = [
     'node',
     'user',
     'field_ui',
     'ds',
-  );
+  ];
 
   /**
    * The created user.
@@ -36,7 +36,7 @@ class JavascriptTest extends JavascriptTestBase {
     parent::setUp();
 
     // Create a test user.
-    $this->adminUser = $this->drupalCreateUser(array(
+    $this->adminUser = $this->drupalCreateUser([
       'access content',
       'admin display suite',
       'admin fields',
@@ -45,13 +45,13 @@ class JavascriptTest extends JavascriptTestBase {
       'administer node fields',
       'administer node form display',
       'administer node display',
-    ));
+    ]);
     $this->drupalLogin($this->adminUser);
 
-    $this->drupalCreateContentType(array(
+    $this->drupalCreateContentType([
       'type' => 'article',
       'name' => 'Article',
-    ));
+    ]);
 
   }
 

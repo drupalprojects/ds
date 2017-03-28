@@ -124,7 +124,7 @@ abstract class BlockBase extends DsFieldBase implements ContainerFactoryPluginIn
    * Returns the config of the block.
    */
   protected function blockConfig() {
-    return array();
+    return [];
   }
 
   /**

@@ -30,7 +30,7 @@ class Ds {
       }
     }
 
-    return isset($static_fields[$entity_type]) ? $static_fields[$entity_type] : array();
+    return isset($static_fields[$entity_type]) ? $static_fields[$entity_type] : [];
   }
 
   /**
@@ -50,14 +50,14 @@ class Ds {
    * @return \Drupal\ds\Plugin\DsField\DsFieldInterface
    *   Field instance.
    */
-  public static function getFieldInstance($key, array $field, EntityInterface $entity, $view_mode, $display, array $build = array()) {
-    $configuration = array(
+  public static function getFieldInstance($key, array $field, EntityInterface $entity, $view_mode, $display, array $build = []) {
+    $configuration = [
       'field' => $field,
       'field_name' => $key,
       'entity' => $entity,
       'build' => $build,
       'view_mode' => $view_mode,
-    );
+    ];
 
     // Load the plugin.
     /* @var $field_instance \Drupal\ds\Plugin\DsField\DsFieldInterface */
@@ -65,7 +65,7 @@ class Ds {
 
     /* @var $display \Drupal\Core\Entity\Display\EntityDisplayInterface */
     if ($field_settings = $display->getThirdPartySetting('ds', 'fields')) {
-      $settings = isset($field_settings[$key]['settings']) ? $field_settings[$key]['settings'] : array();
+      $settings = isset($field_settings[$key]['settings']) ? $field_settings[$key]['settings'] : [];
       // Unset field template settings.
       if (isset($settings['ft'])) {
         unset($settings['ft']);
@@ -161,7 +161,7 @@ class Ds {
    *   List of field layouts.
    */
   public static function getFieldLayoutOptions() {
-    $options = array();
+    $options = [];
     foreach (\Drupal::service('plugin.manager.ds.field.layout')->getDefinitions() as $plugin_id => $plugin) {
       $options[$plugin_id] = $plugin['title'];
     }
@@ -172,10 +172,10 @@ class Ds {
    * Utility function to return CSS classes.
    */
   public static function getClasses($name = 'region') {
-    static $classes = array();
+    static $classes = [];
 
     if (!isset($classes[$name])) {
-      $classes[$name] = array();
+      $classes[$name] = [];
       $custom_classes = \Drupal::config('ds.settings')->get('classes.' . $name);
       if (!empty($custom_classes)) {
         $classes[$name][''] = t('None');

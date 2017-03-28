@@ -18,9 +18,9 @@ class Permissions {
     $permissions = [];
 
     foreach (node_type_get_names() as $key => $name) {
-      $permissions['ds switch ' . $key] = array(
-        'title' => $this->t('Switch view modes on :type', array(':type' => $name)),
-      );
+      $permissions['ds switch ' . $key] = [
+        'title' => $this->t('Switch view modes on :type', [':type' => $name]),
+      ];
     }
 
     return $permissions;
