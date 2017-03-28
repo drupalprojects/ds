@@ -109,7 +109,8 @@ class Ds {
    */
   public static function getDisplay($entity_type, $bundle, $view_mode, $fallback = TRUE) {
     /* @var $entity_display \Drupal\Core\Entity\Display\EntityDisplayInterface */
-    $entity_display = entity_load('entity_view_display', $entity_type . '.' . $bundle . '.' . $view_mode);
+    $entity_manager = \Drupal::entityTypeManager();
+    $entity_display = $entity_manager->getStorage('entity_view_display')->load($entity_type . '.' . $bundle . '.' . $view_mode);
     if ($entity_display) {
       $overridden = $entity_display->status();
     }
@@ -125,7 +126,8 @@ class Ds {
     // but only if the view mode settings aren't overridden for this view mode.
     if ($view_mode != 'default' && !$overridden && $fallback) {
       /* @var $entity_default_display \Drupal\Core\Entity\Display\EntityDisplayInterface */
-      $entity_default_display = entity_load('entity_view_display', $entity_type . '.' . $bundle . '.default');
+      $entity_manager = \Drupal::entityTypeManager();
+      $entity_default_display = $entity_manager->getStorage('entity_view_display')->load($entity_type . '.' . $bundle . '.default');
       if ($entity_default_display) {
         return $entity_default_display;
       }

@@ -25,7 +25,8 @@ function ds_test_theme_suggestions_alter(&$suggestions, $variables, $base_theme_
  * Helper function to return the tag name basid on tid.
  */
 function ds_test_get_tag_name($raw_value, $object) {
-  $term = entity_load('taxonomy_term', $raw_value);
+  $entity_manager = \Drupal::entityTypeManager();
+  $term = $entity_manager->getStorage('taxonomy_term')->load($raw_value);
   return $term->name->value;
 }
 

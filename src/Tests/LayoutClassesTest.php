@@ -76,7 +76,8 @@ class LayoutClassesTest extends FastTestBase {
     $this->assertRaw('ds_extras_second_field');
 
     // Assert we have configuration.
-    $entity_display = entity_load('entity_view_display', 'node.article.default');
+    $entity_manager = \Drupal::entityTypeManager();
+    $entity_display = $entity_manager->getStorage('entity_view_display')->load('node.article.default');
     $data = $entity_display->getThirdPartySettings('ds');
 
     $this->assertTrue(!empty($data), t('Configuration found for layout settings for node article'));

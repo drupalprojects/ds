@@ -2,14 +2,47 @@
 
 namespace Drupal\ds\Form;
 
+use Drupal\Core\Entity\EntityFieldManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\ds\Ds;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a configuration form for configurable actions.
  */
 class ChangeLayoutForm extends FormBase {
+
+  /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
+   * The entity field manager.
+   *
+   * @var \Drupal\Core\Entity\EntityFieldManagerInterface
+   */
+  protected $entityFieldManager;
+
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, EntityFieldManagerInterface $entityFieldManager) {
+    $this->entityTypeManager = $entityTypeManager;
+    $this->entityFieldManager = $entityFieldManager;
+  }
+
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('entity_type.manager'),
+      $container->get('entity_field.manager')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -188,15 +221,17 @@ class ChangeLayoutForm extends FormBase {
     }
 
     // Save configuration.
-    /* @var $entity_display EntityDisplayInterface*/
-    $entity_display = entity_load('entity_view_display', $entity_type . '.' . $bundle . '.' . $display_mode);
+    /* @var $entity_display \Drupal\Core\Entity\Display\EntityDisplayInterface*/
+    $entity_display = $this->entityTypeManager
+      ->getStorage('entity_view_display')
+      ->load($entity_type . '.' . $bundle . '.' . $display_mode);
     foreach (array_keys($third_party_settings) as $key) {
       $entity_display->setThirdPartySetting('ds', $key, $third_party_settings[$key]);
     }
     $entity_display->save();
 
     // Clear entity info cache.
-    \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
+    $this->entityFieldManager->clearCachedFieldDefinitions();
 
     // Show message.
     drupal_set_message(t('The layout change has been saved.'));

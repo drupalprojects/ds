@@ -4,6 +4,7 @@ namespace Drupal\ds_extras\Plugin\DsField;
 
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\EntityDisplayRepositoryInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\ds\Plugin\DsField\DsFieldBase;
@@ -28,10 +29,18 @@ class SwitchField extends DsFieldBase {
   protected $entityDisplayRepository;
 
   /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * Constructs a Display Suite field plugin.
    */
-  public function __construct($configuration, $plugin_id, $plugin_definition, EntityDisplayRepositoryInterface $entity_display_repository) {
+  public function __construct($configuration, $plugin_id, $plugin_definition, EntityDisplayRepositoryInterface $entity_display_repository, EntityTypeManagerInterface $entity_type_manager) {
     $this->entityDisplayRepository = $entity_display_repository;
+    $this->entityTypeManager = $entity_type_manager;
 
     parent::__construct($configuration, $plugin_id, $plugin_definition);
   }
@@ -45,7 +54,8 @@ class SwitchField extends DsFieldBase {
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('entity_display.repository')
+      $container->get('entity_display.repository'),
+      $container->get('entity_type.manager')
     );
   }
 
@@ -119,7 +129,9 @@ class SwitchField extends DsFieldBase {
     $config = $this->getConfiguration();
     $config = isset($config['vms']) ? $config['vms'] : array();
     foreach ($view_modes as $key => $value) {
-      $entity_display = entity_load('entity_view_display', $entity_type . '.' . $bundle . '.' . $key);
+      $entity_display = $this->entityTypeManager
+        ->getStorage('entity_view_display')
+        ->load($entity_type . '.' . $bundle . '.' . $key);
       if (!empty($entity_display)) {
         if ($entity_display->status()) {
           $form['vms'][$key] = array(
@@ -147,7 +159,9 @@ class SwitchField extends DsFieldBase {
     $summary[] = 'View mode labels';
 
     foreach ($view_modes as $key => $value) {
-      $entity_display = entity_load('entity_view_display', $entity_type . '.' . $bundle . '.' . $key);
+      $entity_display = $this->entityTypeManager
+        ->getStorage('entity_view_display')
+        ->load($entity_type . '.' . $bundle . '.' . $key);
       if (!empty($entity_display)) {
         if ($entity_display->status()) {
           $label = isset($settings[$key]) ? $settings[$key] : $key;
