@@ -97,6 +97,83 @@ function ds_theme_registry_alter(&$theme_registry) {
     }
   }
 
+  // ------------------------------------------------------------------------
+  // Workaround to get theme suggestions working for templates using the
+  // the Display Suite class. It's borderline insane, but gets the job done.
+  //
+  // Note that this currently only works for Twig, but I assume, there isn't
+  // any other engine out there yet for Drupal 8.
+  //
+  // Code based on drupal_find_theme_templates().
+  //
+  // @see
+  //   - https://www.drupal.org/node/2862683 (core queue)
+  //   - https://www.drupal.org/node/2802429 (DS queue)
+  //      (and maybe others)
+  // ------------------------------------------------------------------------
+
+  $engine = \Drupal::theme()->getActiveTheme()->getEngine();
+  if ($engine == 'twig') {
+
+    $extension = '.html.twig';
+    $theme_path = \Drupal::theme()->getActiveTheme()->getPath();
+
+    // Escape the periods in the extension.
+    $regex = '/' . str_replace('.', '\.', $extension) . '$/';
+    // Get a listing of all template files in the path to search.
+    $files = file_scan_directory($theme_path, $regex, ['key' => 'filename']);
+    $patterns = array_keys($files);
+    $implementations = [];
+
+    foreach ($layout_theme_hooks as $hook) {
+
+      // Ignored if not registered (which would be weird).
+      if (!isset($theme_registry[$hook])) {
+        continue;
+      }
+
+      $pattern = isset($info['pattern']) ? $info['pattern'] : ($hook . '__');
+      if (!empty($pattern)) {
+        // Transform _ in pattern to - to match file naming scheme
+        // for the purposes of searching.
+        $pattern = strtr($pattern, '_', '-');
+
+        $matches = preg_grep('/^' . $pattern . '/', $patterns);
+        if ($matches) {
+          foreach ($matches as $match) {
+            $file = $match;
+            // Remove the extension from the filename.
+            $file = str_replace($extension, '', $file);
+            // Put the underscores back in for the hook name and register this
+            // pattern.
+            $info = $theme_registry[$hook];
+            $arg_name = isset($info['variables']) ? 'variables' : 'render element';
+            $new_hook = strtr($file, '-', '_');
+            $implementations[$new_hook] = [
+              'template' => $file,
+              'path' => dirname($files[$match]->uri),
+              $arg_name => $info[$arg_name],
+              'base hook' => 'layout',
+              'type' => 'theme_engine',
+              'theme path' => $theme_path,
+            ];
+            if (isset($theme_registry[$hook]['preprocess functions'])) {
+              $implementations[$new_hook]['preprocess functions'] = $theme_registry[$hook]['preprocess functions'];
+            }
+          }
+        }
+      }
+    }
+
+    if (!empty($implementations)) {
+      $theme_registry += $implementations;
+    }
+  }
+
+  // ------------------------------------------------------------------------
+  // End of workaround, hopefully we can kill this one day.
+  // ------------------------------------------------------------------------
+
   // Run field group preprocess before ds_entity_view.
   if (function_exists('field_group_build_entity_groups')) {
     array_unshift($theme_registry['ds_entity_view']['preprocess functions'], 'field_group_build_entity_groups');

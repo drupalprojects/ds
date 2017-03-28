@@ -114,8 +114,23 @@ class LayoutPluginTest extends FastTestBase {
     $this->drupalGet('node/' . $node->id());
 
     // Check we don't have empty wrappers.
-    $this->assertRaw('ds-1col');
-    $this->assertNoRaw('<>', 'No empty wrappers found');
+    $xpath = $this->xpath('//div[@class="node node--type-article node--view-mode-full ds-1col clearfix"]');
+    $this->assertTrue(count($xpath) == 1);
+    $this->assertTrimEqual($xpath[0]->div->p, $node->get('body')->value);
+
+    // Switch theme.
+    $this->container->get('theme_installer')->install(['ds_test_layout_theme']);
+    $config = \Drupal::configFactory()->getEditable('system.theme');
+    $config->set('default', 'ds_test_layout_theme')->save();
+    drupal_flush_all_caches();
+
+    // Go to the node.
+    $this->drupalGet('node/' . $node->id());
+    $this->assertRaw('id="overridden-ds-1-col-template"');
+    $xpath = $this->xpath('//div[@class="node node--type-article node--view-mode-full ds-1col clearfix"]');
+    $this->assertTrue(count($xpath) == 1);
+    $this->assertTrimEqual($xpath[0]->div->p, $node->get('body')->value);
+
   }
 
 }

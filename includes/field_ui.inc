@@ -903,17 +903,17 @@ function _ds_field_ui_table_layouts_preview(array &$form, FormStateInterface $fo
   }
 
   if (!empty($layout_string)) {
+    /** @var \Drupal\Core\Layout\LayoutDefinition $chosen_layout */
     $chosen_layout = $ds_layouts[$layout_string];
     $selected = '<strong>' . $chosen_layout->getLabel() . '</strong>';
-    // TOTO bring back
-//    $selected .= '<br/>' . t('The default template can be found in %path', array('%path' => $chosen_layout['template_path']));
+    $selected .= '<br/>' . t('The default template can be found in %path', array('%path' => $chosen_layout->getPath() . '/' . $chosen_layout->getTemplate()));
     $suggestions_array = array();
-    $suggestions_array[0] = $layout_string . '--' . $display->getTargetEntityTypeId();
-    $suggestions_array[2] = $layout_string . '--' . $display->getTargetEntityTypeId() . '-' . $display->getTargetBundle();
-    $suggestions_array[4] = $layout_string . '--' . $display->getTargetEntityTypeId() . '--{id}';
+    $suggestions_array[0] = $chosen_layout->getTemplate() . '--' . $display->getTargetEntityTypeId();
+    $suggestions_array[2] = $chosen_layout->getTemplate() . '--' . $display->getTargetEntityTypeId() . '-' . $display->getTargetBundle();
+    $suggestions_array[4] = $chosen_layout->getTemplate() . '--' . $display->getTargetEntityTypeId() . '--{id}';
     if ($display->getMode() != 'default') {
-      $suggestions_array[1] = $layout_string . '--' . $display->getTargetEntityTypeId() . '-' . $display->getMode();
-      $suggestions_array[3] = $layout_string . '--' . $display->getTargetEntityTypeId() . '-' . $display->getTargetBundle() . '-' . $display->getMode();
+      $suggestions_array[1] = $chosen_layout->getTemplate() . '--' . $display->getTargetEntityTypeId() . '-' . $display->getMode();
+      $suggestions_array[3] = $chosen_layout->getTemplate() . '--' . $display->getTargetEntityTypeId() . '-' . $display->getTargetBundle() . '-' . $display->getMode();
     }
 
     ksort($suggestions_array);
