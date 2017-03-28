@@ -426,9 +426,9 @@ function ds_preprocess_ds_layout(&$variables) {
 
   // Fetch the entity type.
   $bundle = FALSE;
-  $entity_type = FALSE;
+  $entity_type_id = FALSE;
   if (isset($variables['content']['#entity_type'])) {
-    $entity_type = $variables['content']['#entity_type'];
+    $entity_type_id = $variables['content']['#entity_type'];
   }
   if (isset($variables['content']['#bundle'])) {
     $bundle = $variables['content']['#bundle'];
@@ -469,10 +469,10 @@ function ds_preprocess_ds_layout(&$variables) {
     foreach ($layout_attributes as $layout_attribute) {
       $replaced_attribute = $layout_attribute;
       if (strpos($layout_attribute, '|') !== FALSE) {
-        if (isset($entity_type)) {
+        if (isset($entity_type_id)) {
           $replaced_attribute = \Drupal::service('token')->replace(
             $layout_attribute,
-            array($variables['content']['#entity_type'] => $variables['content']['#' . $entity_type]),
+            array($variables['content']['#entity_type'] => $variables['content']['#' . $entity_type_id]),
             array('clear' => TRUE)
           );
         }
@@ -487,8 +487,8 @@ function ds_preprocess_ds_layout(&$variables) {
     $url = '';
     switch ($layout_settings['link_attribute']) {
       case 'content':
-        if ($entity_type) {
-          $url = $variables['content']['#' . $entity_type]->toUrl()->getInternalPath();
+        if ($entity_type_id) {
+          $url = $variables['content']['#' . $entity_type_id]->toUrl()->getInternalPath();
         }
         break;
 
@@ -497,8 +497,8 @@ function ds_preprocess_ds_layout(&$variables) {
         break;
 
       case 'tokens':
-        if ($entity_type) {
-          $url = \Drupal::service('token')->replace($layout_settings['link_custom'], array($layout_settings => $variables['content']['#' . $entity_type]), array('clear' => TRUE));
+        if ($entity_type_id) {
+          $url = \Drupal::service('token')->replace($layout_settings['link_custom'], array($entity_type_id => $variables['content']['#' . $entity_type_id]), array('clear' => TRUE));
         }
         break;
     }
@@ -509,16 +509,16 @@ function ds_preprocess_ds_layout(&$variables) {
     }
   }
 
-  if ($entity_type) {
+  if ($entity_type_id) {
     if (isset($variables['content']['#ds_configuration'])) {
 
       // Add theming-classes to template.
       $entity_classes = !empty($variables['content']['#ds_configuration']['layout']['entity_classes']) ? $variables['content']['#ds_configuration']['layout']['entity_classes'] : 'old_view_mode';
       if ($entity_classes != 'no_classes') {
         if ($entity_classes == 'all_classes') {
-          $variables['attributes']['class'][] = Html::cleanCssIdentifier($entity_type);
-          $variables['attributes']['class'][] = Html::cleanCssIdentifier($entity_type) . '--type-' . Html::cleanCssIdentifier($bundle);
-          $variables['attributes']['class'][] = Html::cleanCssIdentifier($entity_type) . '--view-mode-' . Html::cleanCssIdentifier($variables['content']['#view_mode']);
+          $variables['attributes']['class'][] = Html::cleanCssIdentifier($entity_type_id);
+          $variables['attributes']['class'][] = Html::cleanCssIdentifier($entity_type_id) . '--type-' . Html::cleanCssIdentifier($bundle);
+          $variables['attributes']['class'][] = Html::cleanCssIdentifier($entity_type_id) . '--view-mode-' . Html::cleanCssIdentifier($variables['content']['#view_mode']);
         }
         elseif ($entity_classes == 'old_view_mode') {
           // Add (old style, non cleaned) view-mode-{name} to classes.
@@ -529,8 +529,8 @@ function ds_preprocess_ds_layout(&$variables) {
       }
 
       // RDF support
-      if ($entity_type == 'node' && function_exists('rdf_preprocess_node')) {
-        $entity = isset($variables[$entity_type]) ? $variables[$entity_type] : (isset($variables['content']['#' . $entity_type]) ? $variables['content']['#' . $entity_type] : '');
+      if ($entity_type_id == 'node' && function_exists('rdf_preprocess_node')) {
+        $entity = isset($variables[$entity_type_id]) ? $variables[$entity_type_id] : (isset($variables['content']['#' . $entity_type_id]) ? $variables['content']['#' . $entity_type_id] : '');
         if ($entity) {
           $variables['node'] = $entity;
           // We disable the date feature for now as it throws notices
@@ -544,7 +544,7 @@ function ds_preprocess_ds_layout(&$variables) {
 
       // Let other modules alter the ds array before rendering.
       $context = array(
-        'entity' => isset($variables[$entity_type]) ? $variables[$entity_type] : (isset($variables['content']['#' . $entity_type]) ? $variables['content']['#' . $entity_type] : ''),
+        'entity' => isset($variables[$entity_type_id]) ? $variables[$entity_type_id] : (isset($variables['content']['#' . $entity_type_id]) ? $variables['content']['#' . $entity_type_id] : ''),
         'entity_type' => $variables['content']['#entity_type'],
         'bundle' => $variables['content']['#bundle'],
         'view_mode' => $variables['content']['#view_mode'],
