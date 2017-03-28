@@ -12,6 +12,13 @@ class Permissions {
   use StringTranslationTrait;
 
   /**
+   * Constructs a Permissions object.
+   */
+  public function __construct() {
+    // Empty constructor to prevent php 4 constructor error.
+  }
+
+  /**
    * Returns an array of ds switch view mode permissions.
    */
   public function permissions() {
