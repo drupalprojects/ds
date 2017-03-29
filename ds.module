@@ -79,14 +79,14 @@ function ds_theme_registry_alter(&$theme_registry) {
   /** @var \Drupal\Core\Layout\LayoutDefinition $info */
   foreach ($layouts as $info) {
     if (is_a($info->getClass(), DsLayout::class, TRUE)) {
-      $layout_theme_hooks[] = $info->getThemeHook();
+      $layout_theme_hooks[$info->getThemeHook()] = 'layout';
     }
   }
 
   // Only add preprocess functions if entity exposes theme function, and this
   // layout is using the Display Suite layout class.
   foreach ($theme_registry as $theme_hook => $info) {
-    if (in_array($theme_hook, $layout_theme_hooks) || (!empty($info['base hook']) && in_array($info['base hook'], $layout_theme_hooks))) {
+    if (array_key_exists($theme_hook, $layout_theme_hooks) || (!empty($info['base hook']) && array_key_exists($info['base hook'], $layout_theme_hooks))) {
 
       // @todo Remove once https://www.drupal.org/node/2861840 is resolved.
       if (!in_array('template_preprocess_layout', $theme_registry[$theme_hook]['preprocess functions'])) {
@@ -94,6 +94,49 @@ function ds_theme_registry_alter(&$theme_registry) {
       }
 
       $theme_registry[$theme_hook]['preprocess functions'][] = 'ds_preprocess_ds_layout';
+    }
+  }
+
+  // Check preprocess functions for ds fields.
+  $field_theme_hooks = [];
+  if (\Drupal::config('ds.settings')->get('field_template')) {
+    $field_layouts = \Drupal::service('plugin.manager.ds.field.layout')
+      ->getDefinitions();
+    foreach ($field_layouts as $key => $plugin) {
+      if ($key != 'default') {
+
+        // Get the hook name.
+        $hook_field_name = 'field__' . $plugin['theme'];
+
+        if (isset($theme_registry[$hook_field_name])) {
+
+          // Store for suggestions later.
+          $field_theme_hooks[$hook_field_name] = 'field';
+
+          // Variable holding the preprocess functions to add later.
+          $preprocess_functions_to_add = [];
+
+          // Overrides don't get the template_preprocess_field function.
+          if (!in_array('template_preprocess_field', $theme_registry[$hook_field_name]['preprocess functions'])) {
+            $preprocess_functions_to_add[] = 'template_preprocess_field';
+          }
+
+          // Overrides don't get the ds_preprocess_field function.
+          if (!in_array('ds_preprocess_field', $theme_registry[$hook_field_name]['preprocess functions'])) {
+            $preprocess_functions_to_add[] = 'ds_preprocess_field';
+          }
+
+          // We need to make sure the function runs asap as the dedicated field
+          // preprocess function might need ds information, e.g.
+          // template_preprocess_field__ds_field_expert().
+          // template_preprocess() will be available, so put them right after.
+          if (!empty($preprocess_functions_to_add)) {
+            $preprocess_functions = $theme_registry[$hook_field_name]['preprocess functions'];
+            array_splice($preprocess_functions, 1, 0, $preprocess_functions_to_add);
+            $theme_registry[$hook_field_name]['preprocess functions'] = $preprocess_functions;
+          }
+        }
+      }
     }
   }
 
@@ -111,6 +154,10 @@ function ds_theme_registry_alter(&$theme_registry) {
   //   - https://www.drupal.org/node/2802429 (DS queue)
   //      (and maybe others)
   // ------------------------------------------------------------------------
+
+  // Merge layout and field hooks.
+  $all_ds_theme_hooks = $layout_theme_hooks + $field_theme_hooks;
+
   $engine = \Drupal::theme()->getActiveTheme()->getEngine();
   if ($engine == 'twig') {
 
@@ -124,7 +171,7 @@ function ds_theme_registry_alter(&$theme_registry) {
     $patterns = array_keys($files);
     $implementations = [];
 
-    foreach ($layout_theme_hooks as $hook) {
+    foreach ($all_ds_theme_hooks as $hook => $base_hook) {
 
       // Ignored if not registered (which would be weird).
       if (!isset($theme_registry[$hook])) {
@@ -152,7 +199,7 @@ function ds_theme_registry_alter(&$theme_registry) {
               'template' => $file,
               'path' => dirname($files[$match]->uri),
               $arg_name => $info[$arg_name],
-              'base hook' => 'layout',
+              'base hook' => $base_hook,
               'type' => 'theme_engine',
               'theme path' => $theme_path,
             ];

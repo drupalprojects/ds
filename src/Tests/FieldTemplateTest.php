@@ -577,6 +577,20 @@ class FieldTemplateTest extends FastTestBase {
     $classes = 'test_field_class ' . $node->id() . ' field field-name-body';
     $xpath = $this->xpath('//div[@class="group-right"]/div[@class="' . $classes . '"]');
     $this->assertTrimEqual($xpath[0]->p, $body_field);
+
+    // Switch theme.
+    $this->container->get('theme_installer')->install(['ds_test_layout_theme']);
+    $config = \Drupal::configFactory()->getEditable('system.theme');
+    $config->set('default', 'ds_test_layout_theme')->save();
+    drupal_flush_all_caches();
+
+    // Go to the node.
+    $this->drupalGet('node/' . $node->id());
+    $this->assertRaw('minimal overridden in test theme!');
+    $classes = 'test_field_class ' . $node->id() . ' field field-name-body';
+    $xpath = $this->xpath('//div[@class="group-right"]/div[@class="' . $classes . '"]');
+    $this->assertTrimEqual($xpath[0]->p, $body_field);
+
   }
 
 }
