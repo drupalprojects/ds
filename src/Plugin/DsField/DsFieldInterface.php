@@ -19,7 +19,7 @@ interface DsFieldInterface extends ConfigurablePluginInterface, ContainerFactory
   /**
    * Returns the summary of the chosen settings.
    *
-   * @param array $settings
+   * @param $settings
    *   Contains the settings of the field.
    *
    * @return array

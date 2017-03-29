@@ -135,7 +135,10 @@ class BlockFieldPluginTest extends FastTestBase {
   }
 
   /**
-   * Cache contexts, tags and max-age on the block should get merged into the field build array
+   * Tests cache properties on blocks.
+   *
+   * Cache contexts, tags and max-age on the block should get merged into the
+   * field build array.
    */
   public function testBlockCache() {
     $block_field_id = Unicode::strtolower($this->randomMachineName());
@@ -156,11 +159,11 @@ class BlockFieldPluginTest extends FastTestBase {
     $settings['type'] = 'article';
     $node = $this->drupalCreateNode($settings);
 
-    // Check for query parameters
+    // Check for query parameters.
     $this->drupalGet($node->toUrl(), ['query' => ['cached' => 1]]);
     $this->assertRaw('cached=1');
 
-    // Check for query parameters
+    // Check for query parameters.
     $this->drupalGet($node->toUrl(), ['query' => ['cached' => 2]]);
     $this->assertRaw('cached=2');
   }

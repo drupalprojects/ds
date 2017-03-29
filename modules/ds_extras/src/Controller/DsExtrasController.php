@@ -16,7 +16,7 @@ class DsExtrasController extends ControllerBase {
   /**
    * Returns an node through JSON.
    *
-   * @param Request $request
+   * @param \Symfony\Component\HttpFoundation\Request $request
    *   The global request object.
    * @param string $entityType
    *   The type of the requested entity.

@@ -197,7 +197,7 @@ class EntitiesTest extends FastTestBase {
     $this->assertText('Tag 1');
     $this->assertNoText('Tag 2');
 
-    // Tests using the title field
+    // Tests using the title field.
     $edit = [
       'fields[node_title][region]' => 'right',
     ];
@@ -229,7 +229,7 @@ class EntitiesTest extends FastTestBase {
       ],
     ];
     $this->dsSelectLayout($test_theme_template, $test_theme_template_assert, 'admin/structure/types/manage/page/display');
-    // Tests using the title field
+    // Tests using the title field.
     $edit = [
       'fields[node_title][region]' => 'ds_content',
     ];

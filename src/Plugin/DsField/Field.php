@@ -64,7 +64,7 @@ TWIG;
       }
     }
 
-    // Build the attributes
+    // Build the attributes.
     $attributes = new Attribute();
     if (!empty($config['class'])) {
       $attributes->addClass($config['class']);
@@ -76,7 +76,7 @@ TWIG;
       '#context' => [
         'is_link' => $is_link,
         'wrapper' => !empty($config['wrapper']) ? $config['wrapper'] : '',
-        'attributes' =>  $attributes,
+        'attributes' => $attributes,
         'entity_url' => $entity_url,
         'output' => $output,
       ],

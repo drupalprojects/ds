@@ -28,11 +28,18 @@ class ChangeLayoutForm extends FormBase {
    */
   protected $entityFieldManager;
 
+  /**
+   * ChangeLayoutForm constructor.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager.
+   * @param \Drupal\Core\Entity\EntityFieldManagerInterface $entityFieldManager
+   *   The entity field manager.
+   */
   public function __construct(EntityTypeManagerInterface $entityTypeManager, EntityFieldManagerInterface $entityFieldManager) {
     $this->entityTypeManager = $entityTypeManager;
     $this->entityFieldManager = $entityFieldManager;
   }
-
 
   /**
    * {@inheritdoc}
@@ -113,7 +120,7 @@ class ChangeLayoutForm extends FormBase {
       $save_regions = [];
       foreach ($regions as $key => $info) {
         $save_regions[$key] = [
-          'label' => $info
+          'label' => $info,
         ];
       }
       $form['#old_layout_info']->setRegions($save_regions);

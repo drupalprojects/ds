@@ -114,10 +114,10 @@ class DsController extends ControllerBase {
   /**
    * Adds a contextual tab to entities.
    *
-   * @param RouteMatchInterface $route_match
+   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   The route information.
    *
-   * @return RedirectResponse
+   * @return \Symfony\Component\HttpFoundation\RedirectResponse
    *   A redirect response pointing to the corresponding display.
    */
   public function contextualTab(RouteMatchInterface $route_match) {

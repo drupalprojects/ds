@@ -3,6 +3,7 @@
 namespace Drupal\ds;
 
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Entity\Display\EntityDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 
 /**
@@ -44,13 +45,15 @@ class Ds {
    *   The current entity.
    * @param string $view_mode
    *   The name of the view mode.
+   * @param \Drupal\Core\Entity\Display\EntityDisplayInterface $display
+   *   The entity display object.
    * @param array $build
    *   The current built of the entity.
    *
    * @return \Drupal\ds\Plugin\DsField\DsFieldInterface
    *   Field instance.
    */
-  public static function getFieldInstance($key, array $field, EntityInterface $entity, $view_mode, $display, array $build = []) {
+  public static function getFieldInstance($key, array $field, EntityInterface $entity, $view_mode, EntityDisplayInterface $display, array $build = []) {
     $configuration = [
       'field' => $field,
       'field_name' => $key,
@@ -81,6 +84,7 @@ class Ds {
    * Gets Display Suite layouts.
    *
    * @return \Drupal\Core\Layout\LayoutDefinition[]
+   *   A list of layouts.
    */
   public static function getLayouts() {
     static $layouts = FALSE;

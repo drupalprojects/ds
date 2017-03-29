@@ -18,7 +18,7 @@ class RdfTest extends FastTestBase {
     'node',
     'field_ui',
     'ds',
-    'rdf'
+    'rdf',
   ];
 
   /**
@@ -30,7 +30,7 @@ class RdfTest extends FastTestBase {
     /* @var \Drupal\node\NodeInterface $node */
     $node = $this->entitiesTestSetup();
 
-    // Look at node and verify the rdf tags are available
+    // Look at node and verify the rdf tags are available.
     $this->drupalGet('node/' . $node->id());
     $this->assertRaw('typeof="schema:Article', 'RDF tag found on the node wrapper');
   }

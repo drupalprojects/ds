@@ -17,7 +17,7 @@ class CopyFieldForm extends FieldFormBase {
   /**
    * {@inheritdoc}
    */
-  public function getFormID() {
+  public function getFormId() {
     return 'ds_field_form';
   }
 

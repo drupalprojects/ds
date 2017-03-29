@@ -3,7 +3,6 @@
 namespace Drupal\ds_test\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Defines a Display suite cache test block.
@@ -20,11 +19,11 @@ class DsCacheTestBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
-    /** @var Request $request */
+    /** @var \Symfony\Component\HttpFoundation\Request $request */
     $request = \Drupal::service('request_stack')->getCurrentRequest();
 
     return [
-      // Print the entire query string
+      // Print the entire query string.
       '#markup' => $request->getQueryString(),
       '#cache' => [
         'contexts' => ['timezone', 'user'],

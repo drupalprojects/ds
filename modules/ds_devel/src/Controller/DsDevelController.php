@@ -5,7 +5,6 @@ namespace Drupal\ds_devel\Controller;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityDisplayRepositoryInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Url;
@@ -69,7 +68,7 @@ class DsDevelController extends ControllerBase {
    * Lists all instances of fields on any views.
    *
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
-   *    A RouteMatch object.
+   *   A RouteMatch object.
    *
    * @return array
    *   The Views fields report page.
@@ -84,8 +83,8 @@ class DsDevelController extends ControllerBase {
     $key = $this->currentRequest->get('key', 'default');
 
     $built_entity = $this->entityTypeManager()
-        ->getViewBuilder($entity_type_id)
-        ->view($entity, $key);
+      ->getViewBuilder($entity_type_id)
+      ->view($entity, $key);
     $markup = $this->renderer->render($built_entity);
 
     $links = [];

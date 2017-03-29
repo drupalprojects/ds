@@ -14,7 +14,7 @@ abstract class DsFieldTemplateBase extends PluginBase implements DsFieldTemplate
   /**
    * The entity used for token replacement.
    *
-   * @var EntityInterface
+   * @var \Drupal\Core\Entity\EntityInterface
    */
   protected $entity = NULL;
 

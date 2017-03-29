@@ -116,7 +116,7 @@ function ds_field_ui_create_vertical_tabs(&$form) {
  *
  * @param array $form
  *   The form to add layout fieldset and extra Display Suite fields.
- * @param FormStateInterface $form_state
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   The current form state.
  *
  * @return array
@@ -128,7 +128,7 @@ function ds_field_ui_regions(array $form, FormStateInterface $form_state) {
   $entity_type = $form['#entity_type'];
   $bundle = $form['#bundle'];
 
-  /* @var EntityFormInterface $entity_form */
+  /* @var \Drupal\Core\Entity\EntityFormInterface $entity_form */
   $entity_form = $form_state->getFormObject();
   /* @var \Drupal\Core\Entity\Display\EntityDisplayInterface $entity_display */
   $entity_display = $entity_form->getEntity();
@@ -231,8 +231,6 @@ function ds_field_ui_regions(array $form, FormStateInterface $form_state) {
 
       // Add region.
       // Core added regions to Field UI, which default to 'content'
-      // TODO this is going to be tricky for update path when the layout has
-      // no 'content' key :/
       if (!isset($row['region'])) {
         $split = 7;
         $default = (isset($field_regions[$name]) && isset($region_options[$field_regions[$name]])) ? $field_regions[$name] : 'hidden';
@@ -618,11 +616,11 @@ function ds_field_ui_layout_clone($form, FormStateInterface $form_state) {
 /**
  * Creates a summary for the field format configuration summary.
  *
- * @param DsFieldInterface $plugin_instance
+ * @param \Drupal\ds\Plugin\DsField\DsFieldInterface $plugin_instance
  *   An instance of the plugin.
  * @param array $settings
  *   The passed settings.
- * @param FormStateInterface $form_state
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   The form state of the summary.
  *
  * @return array
@@ -650,9 +648,9 @@ function ds_field_settings_summary(DsFieldInterface $plugin_instance, array $set
 /**
  * Creates a form for Display Suite fields.
  *
- * @param DsFieldInterface $plugin_instance
+ * @param \Drupal\ds\Plugin\DsField\DsFieldInterface $plugin_instance
  *   An instance of the plugin.
- * @param FormStateInterface $form_state
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   The form state of the form.
  *
  * @return mixed
@@ -684,7 +682,7 @@ function ds_field_settings_form(DsFieldInterface $plugin_instance, FormStateInte
  *
  * @param array $form
  *   The actual form.
- * @param FormStateInterface $form_state
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   The form state of the form.
  */
 function _ds_field_group_field_ui_fix_notices(array $form, FormStateInterface $form_state) {
@@ -708,7 +706,7 @@ function _ds_field_group_field_ui_fix_notices(array $form, FormStateInterface $f
  *   The name of the view_mode.
  * @param array $form
  *   A collection of form properties.
- * @param FormStateInterface $form_state
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   The form_state.
  */
 function _ds_field_ui_table_layouts($entity_type, $bundle, $view_mode, array &$form, FormStateInterface $form_state) {
@@ -862,7 +860,7 @@ function _ds_field_ui_table_layouts($entity_type, $bundle, $view_mode, array &$f
  *
  * @param array $form
  *   A collection of form properties.
- * @param FormStateInterface $form_state
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   The state of the form.
  * @param array $ds_layouts
  *   Collection of all the layouts.
@@ -953,7 +951,8 @@ function _ds_field_ui_table_layouts_preview(array &$form, FormStateInterface $fo
       ];
 
       // TODO this is gone iirc no?
-      /*if (!empty($chosen_layout['css'])) {
+      /*
+      if (!empty($chosen_layout['css'])) {
         $disable_css = FALSE;
 
         if (isset($layout['disable_css'])) {
@@ -968,7 +967,6 @@ function _ds_field_ui_table_layouts_preview(array &$form, FormStateInterface $fo
           '#title' => t('Disable layout CSS styles'),
           '#default_value' => $disable_css,
         );
-
       }*/
 
       $entity_classes = 'all_classes';
@@ -1076,7 +1074,7 @@ function ds_field_ui_change_layout_submit($form, FormStateInterface $form_state)
  *   The name of the view_mode.
  * @param array $form
  *   A collection of form properties.
- * @param FormStateInterface $form_state
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   A collection of form_state properties.
  */
 function _ds_field_ui_fields($entity_type, $bundle, $view_mode, array &$form, FormStateInterface $form_state) {
@@ -1261,7 +1259,7 @@ function _ds_field_ui_fields($entity_type, $bundle, $view_mode, array &$form, Fo
  *
  * @param array $form
  *   A collection of form properties.
- * @param FormStateInterface $form_state
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   A collection of form_state properties.
  */
 function _ds_field_ui_core_fields(array &$form, FormStateInterface $form_state) {

@@ -30,10 +30,12 @@ class FieldController extends ControllerBase implements ContainerInjectionInterf
   protected $moduleHandler;
 
   /**
-   * Constructs a \Drupal\ds\Routing\FieldController object.
+   * Constructs a \Drupal\ds\Controller\FieldController object.
    *
    * @param \Drupal\Core\Config\StorageInterface $storage
    *   The configuration storage.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler.
    */
   public function __construct(StorageInterface $storage, ModuleHandlerInterface $module_handler) {
     $this->storage = $storage;

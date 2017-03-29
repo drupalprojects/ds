@@ -110,7 +110,7 @@ class BlockFieldForm extends FieldFormBase implements ContainerInjectionInterfac
       $form_state->setRedirectUrl($url);
     }
 
-    // Invalidate all blocks
+    // Invalidate all blocks.
     Cache::invalidateTags(['config:ds.block_base']);
   }
 

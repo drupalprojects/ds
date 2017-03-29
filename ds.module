@@ -33,7 +33,7 @@ function ds_help($route_name, RouteMatchInterface $route_match) {
       $output .= '<br/>' . t('The <a href=":link">Display Suite</a> module allows you to take full control over how your content is displayed using a drag and drop interface. Arrange your nodes, views, comments, user data etc. the way you want without having to work your way through dozens of template files.', [':link' => 'https://www.drupal.org/project/ds']);
       $output .= '<br/>' . t('It allows you to apply theme templates to content type displays. It comes with predefined layouts such as "two columns", "three columns stacked", "three columns fluid" et cetera, but also lets you define your own.');
       $output .= '<br/>' . t('Display Suite allows you to create fields from tokens or blocks.  This gives you full control over the way content is displayed without having to maintain dozens of twig files.');
-      $output .= '<br/>' . t('More documentation about Display Suite in Drupal 8 can be found in Drupal\'s <a href=":documentation">Community Documentation </a>.', [':documentation'=> 'https://www.drupal.org/node/2718943']);
+      $output .= '<br/>' . t('More documentation about Display Suite in Drupal 8 can be found in Drupal\'s <a href=":documentation">Community Documentation </a>.', [':documentation' => 'https://www.drupal.org/node/2718943']);
       return $output;
   }
 }
@@ -111,7 +111,6 @@ function ds_theme_registry_alter(&$theme_registry) {
   //   - https://www.drupal.org/node/2802429 (DS queue)
   //      (and maybe others)
   // ------------------------------------------------------------------------
-
   $engine = \Drupal::theme()->getActiveTheme()->getEngine();
   if ($engine == 'twig') {
 
@@ -528,12 +527,12 @@ function ds_preprocess_ds_layout(&$variables) {
         }
       }
 
-      // RDF support
+      // RDF support.
       if ($entity_type_id == 'node' && function_exists('rdf_preprocess_node')) {
         $entity = isset($variables[$entity_type_id]) ? $variables[$entity_type_id] : (isset($variables['content']['#' . $entity_type_id]) ? $variables['content']['#' . $entity_type_id] : '');
         if ($entity) {
           $variables['node'] = $entity;
-          // We disable the date feature for now as it throws notices
+          // We disable the date feature for now as it throws notices.
           $variables['display_submitted'] = FALSE;
           rdf_preprocess_node($variables);
         }
