@@ -59,3 +59,12 @@ function ds_update_8003() {
     \Drupal::service('module_installer')->install(['layout_discovery'], FALSE);
   }
 }
+
+/**
+ * Makes sure Layout Discovery is enabled on update, as 8003 could have failed to do so.
+ */
+function ds_update_8004() {
+  if (!\Drupal::moduleHandler()->moduleExists('layout_discovery')) {
+    \Drupal::service('module_installer')->install(['layout_discovery'], FALSE);
+  }
+}
