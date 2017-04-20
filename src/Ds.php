@@ -90,6 +90,11 @@ class Ds {
     static $layouts = FALSE;
 
     if (!$layouts) {
+      // This can be called before ds_update_8003() has run. If that is the case
+      // return an empty array and don't static cache anything.
+      if (!\Drupal::hasService('plugin.manager.core.layout')) {
+        return [];
+      }
       $layouts = \Drupal::service('plugin.manager.core.layout')->getDefinitions();
     }
 
