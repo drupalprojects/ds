@@ -68,3 +68,30 @@ function ds_update_8004() {
     \Drupal::service('module_installer')->install(['layout_discovery'], FALSE);
   }
 }
+
+/**
+ * Fix scrambled fields in the UI
+ */
+function ds_update_8005() {
+  // Fix scrambled fields
+  $entity_storage = \Drupal::service('entity_type.manager')->getStorage('entity_view_display');
+  /** @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface $entity_display */
+  foreach($entity_storage->loadMultiple() as $entity_display) {
+    if ($ds_config = $entity_display->getThirdPartySettings('ds')) {
+      $components = $entity_display->getComponents();
+      if (empty($ds_config['regions'])) {
+        continue;
+      }
+      foreach ($ds_config['regions'] as $region_name => $fields) {
+        foreach ($fields as $field_name) {
+          if (isset($components[$field_name])) {
+            $options = $components[$field_name];
+            $options['region'] = $region_name;
+            $entity_display->setComponent($field_name, $options);
+          }
+        }
+      }
+      $entity_display->save();
+    }
+  }
+}
