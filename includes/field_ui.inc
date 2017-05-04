@@ -950,9 +950,7 @@ function _ds_field_ui_table_layouts_preview(array &$form, FormStateInterface $fo
         '#items' => $suggestions_array,
       ];
 
-      // TODO this is gone iirc no?
-      /*
-      if (!empty($chosen_layout['css'])) {
+      if (!empty($chosen_layout->getLibrary())) {
         $disable_css = FALSE;
 
         if (isset($layout['disable_css'])) {
@@ -967,7 +965,7 @@ function _ds_field_ui_table_layouts_preview(array &$form, FormStateInterface $fo
           '#title' => t('Disable layout CSS styles'),
           '#default_value' => $disable_css,
         );
-      }*/
+      }
 
       $entity_classes = 'all_classes';
       if (isset($layout['entity_classes'])) {
