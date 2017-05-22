@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\ds\Tests;
+namespace Drupal\Tests\ds\Functional;
 
 use Drupal\views\Tests\ViewTestData;
 use Drupal\views\ViewExecutable;
@@ -67,21 +67,21 @@ class ViewsTest extends FastTestBase {
     $settings_1 = [
       'type' => 'article',
       'title' => 'Article 1',
-      'created' => REQUEST_TIME,
+      'created' => \Drupal::time()->getRequestTime(),
     ];
     $node_1 = $this->drupalCreateNode($settings_1);
     $this->drupalPostForm('node/' . $node_1->id() . '/edit', $edit_tag_1, t('Save and keep published'));
     $settings_2 = [
       'type' => 'article',
       'title' => 'Article 2',
-      'created' => REQUEST_TIME + 3600,
+      'created' => \Drupal::time()->getRequestTime() + 3600,
     ];
     $node_2 = $this->drupalCreateNode($settings_2);
     $this->drupalPostForm('node/' . $node_2->id() . '/edit', $edit_tag_1, t('Save and keep published'));
     $settings_3 = [
       'type' => 'article',
       'title' => 'Article 3',
-      'created' => REQUEST_TIME + 7200,
+      'created' => \Drupal::time()->getRequestTime() + 7200,
     ];
     $node_3 = $this->drupalCreateNode($settings_3);
     $this->drupalPostForm('node/' . $node_3->id() . '/edit', $edit_tag_2, t('Save and keep published'));
@@ -125,11 +125,11 @@ class ViewsTest extends FastTestBase {
     // Get default teaser view.
     $this->drupalGet('ds-testing');
     foreach (['group-left', 'group-right'] as $region) {
-      $this->assertRaw($region, t('Region @region found', ['@region' => $region]));
+      $this->assertSession()->responseContains($region);
     }
-    $this->assertRaw('Article 1');
-    $this->assertRaw('Article 2');
-    $this->assertRaw('Article 3');
+    $this->assertSession()->responseContains('Article 1');
+    $this->assertSession()->responseContains('Article 2');
+    $this->assertSession()->responseContains('Article 3');
 
     // Get alternating view.
     $this->drupalGet('ds-testing-2');
@@ -142,39 +142,39 @@ class ViewsTest extends FastTestBase {
       'fourth',
     ];
     foreach ($regions as $region) {
-      $this->assertRaw($region, t('Region @region found', ['@region' => $region]));
+      $this->assertSession()->responseContains($region);
     }
-    $this->assertNoRaw('Article 1');
-    $this->assertRaw('Article 2');
-    $this->assertRaw('Article 3');
+    $this->assertSession()->responseNotContains('Article 1');
+    $this->assertSession()->responseContains('Article 2');
+    $this->assertSession()->responseContains('Article 3');
 
     // Get grouping view (without changing header function).
     $this->drupalGet('ds-testing-3');
     foreach (['group-left', 'group-right'] as $region) {
-      $this->assertRaw($region, t('Region @region found', ['@region' => $region]));
+      $this->assertSession()->responseContains($region);
     }
-    $this->assertRaw('Article 1');
-    $this->assertRaw('Article 2');
-    $this->assertRaw('Article 3');
-    $this->assertRaw('<h2 class="grouping-title">' . $tag1->id() . '</h2>');
-    $this->assertRaw('<h2 class="grouping-title">' . $tag2->id() . '</h2>');
+    $this->assertSession()->responseContains('Article 1');
+    $this->assertSession()->responseContains('Article 2');
+    $this->assertSession()->responseContains('Article 3');
+    $this->assertSession()->responseContains('<h2 class="grouping-title">' . $tag1->id() . '</h2>');
+    $this->assertSession()->responseContains('<h2 class="grouping-title">' . $tag2->id() . '</h2>');
 
     // Get grouping view (with changing header function).
     $this->drupalGet('ds-testing-4');
     foreach (['group-left', 'group-right'] as $region) {
-      $this->assertRaw($region, t('Region @region found', ['@region' => $region]));
+      $this->assertSession()->responseContains($region);
     }
-    $this->assertRaw('Article 1');
-    $this->assertRaw('Article 2');
-    $this->assertRaw('Article 3');
-    $this->assertRaw('<h2 class="grouping-title">' . $tag1->getName() . '</h2>');
-    $this->assertRaw('<h2 class="grouping-title">' . $tag2->getName() . '</h2>');
+    $this->assertSession()->responseContains('Article 1');
+    $this->assertSession()->responseContains('Article 2');
+    $this->assertSession()->responseContains('Article 3');
+    $this->assertSession()->responseContains('<h2 class="grouping-title">' . $tag1->getName() . '</h2>');
+    $this->assertSession()->responseContains('<h2 class="grouping-title">' . $tag2->getName() . '</h2>');
 
     // Get advanced function view.
     $this->drupalGet('ds-testing-5');
-    $this->assertRaw('Advanced display for id 1');
-    $this->assertRaw('Advanced display for id 2');
-    $this->assertRaw('Advanced display for id 3');
+    $this->assertSession()->responseContains('Advanced display for id 1');
+    $this->assertSession()->responseContains('Advanced display for id 2');
+    $this->assertSession()->responseContains('Advanced display for id 3');
   }
 
 }

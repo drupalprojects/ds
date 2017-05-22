@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\ds\Tests;
+namespace Drupal\Tests\ds\Functional;
 
 /**
  * Tests for testing field permissions.
@@ -46,18 +46,18 @@ class FieldPermissionsTest extends FastTestBase {
     $settings = ['type' => 'article'];
     $node = $this->drupalCreateNode($settings);
     $this->drupalGet('node/' . $node->id());
-    $this->assertRaw('group-right', 'Template found (region right)');
-    $this->assertNoText('Test field plugin on node ' . $node->id(), 'Test code field not found');
+    $this->assertSession()->responseContains('group-right');
+    $this->assertSession()->pageTextNotContains('Test field plugin on node ' . $node->id());
 
     // Give permissions.
     $edit = [
       'authenticated[view node_author on node]' => 1,
       'authenticated[view test_field on node]' => 1,
     ];
-    $this->drupalPostForm('admin/people/permissions', $edit, t('Save permissions'));
+    $this->drupalPostForm('admin/people/permissions', $edit,'Save permissions');
     $this->drupalGet('node/' . $node->id());
-    $this->assertRaw('group-left', 'Template found (region left)');
-    $this->assertText('Test field plugin on node ' . $node->id(), 'Test field plugin found');
+    $this->assertSession()->responseContains('group-left');
+    $this->assertSession()->pageTextContains('Test field plugin on node ' . $node->id());
   }
 
 }

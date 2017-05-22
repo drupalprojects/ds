@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\ds\Tests;
+namespace Drupal\Tests\ds\Functional;
 
 /**
  * Tests for twig specific functionality.
@@ -37,17 +37,21 @@ class TwigRenderTest extends FastTestBase {
     $this->drupalGet('node/' . $node->id());
 
     // Assert that the title is visible.
-    $this->assertText($node->getTitle());
+    $elements = $this->xpath('//div[@class="field field--name-node-title field--type-ds field--label-hidden field__item"]/h2');
+    $this->assertEquals(count($elements), 1);
+
+    $this->assertSession()->pageTextContains($node->getTitle());
 
     $edit = [
       'fs3[use_field_names]' => FALSE,
     ];
-    $this->drupalPostForm('admin/structure/ds/settings', $edit, t('Save configuration'));
+    $this->drupalPostForm('admin/structure/ds/settings', $edit, 'Save configuration');
 
     $this->drupalGet('node/' . $node->id());
 
     // Assert that the title is not visible anymore.
-    $this->assertNoText($node->getTitle());
+    $elements = $this->xpath('//div[@class="field field--name-node-title field--type-ds field--label-hidden field__item"]/h2');
+    $this->assertEquals(count($elements), 0);
   }
 
 }

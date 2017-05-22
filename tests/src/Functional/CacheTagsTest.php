@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\ds\Tests;
+namespace Drupal\Tests\ds\Functional;
 
 /**
  * Tests for cache tags associated with an entity.
@@ -46,7 +46,7 @@ class CacheTagsTest extends FastTestBase {
     $this->drupalGet('node/' . $node->id());
     $headers = $this->drupalGetHeader('X-Drupal-Cache-Tags');
     $this->assertTrue(
-      strpos($headers, 'user:' . $node->getRevisionAuthor()->getOriginalId()),
+      strpos($headers, 'user:' . $node->getRevisionUser()->getOriginalId()),
       'User cache tag found'
     );
   }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\ds\Tests;
+namespace Drupal\Tests\ds\Functional;
 
 use Drupal\views\Tests\ViewTestData;
 use Drupal\views\ViewExecutable;
@@ -67,7 +67,7 @@ class BlockFieldPluginTest extends FastTestBase {
 
     // Assert it's found on the Field UI for article.
     $this->drupalGet('admin/structure/types/manage/article/display');
-    $this->assertRaw('fields[dynamic_block_field:node-test_block_title_field][weight]', t('Test block field found on node article.'));
+    $this->assertSession()->responseContains('fields[dynamic_block_field:node-test_block_title_field][weight]');
 
     $fields = [
       'fields[dynamic_block_field:node-test_block_title_field][region]' => 'left',
@@ -84,18 +84,18 @@ class BlockFieldPluginTest extends FastTestBase {
 
     // Look at node and verify the block title is overridden.
     $this->drupalGet('node/' . $node->id());
-    $this->assertRaw('Test block title field', t('Default field label.'));
+    $this->assertSession()->responseContains('Test block title field');
 
     // Update testing label.
     $edit = [
       'use_block_title' => '1',
     ];
     $this->drupalPostForm('admin/structure/ds/fields/manage_block/test_block_title_field', $edit, t('Save'));
-    $this->assertText(t('The field Test block title field has been saved'), t('Test field label override updated'));
+    $this->assertSession()->responseContains(t('The field %name has been saved', ['%name' => 'Test block title field']));
 
     // Look at node and verify the block title is overridden.
     $this->drupalGet('node/' . $node->id());
-    $this->assertRaw('Block title from view', t('Field label from view block display.'));
+    $this->assertSession()->responseContains('Block title from view');
   }
 
   /**
@@ -123,7 +123,7 @@ class BlockFieldPluginTest extends FastTestBase {
     // Check block is not visible.
     \Drupal::state()->set('ds_test_block__access', FALSE);
     $this->drupalGet($node->toUrl());
-    $this->assertNoRaw(DsTestBlock::BODY_TEXT);
+    $this->assertSession()->responseNotContains(DsTestBlock::BODY_TEXT);
 
     // Reset page cache.
     $this->resetAll();
@@ -131,7 +131,7 @@ class BlockFieldPluginTest extends FastTestBase {
     // Check block is visible.
     \Drupal::state()->set('ds_test_block__access', TRUE);
     $this->drupalGet($node->toUrl());
-    $this->assertRaw(DsTestBlock::BODY_TEXT);
+    $this->assertSession()->responseContains(DsTestBlock::BODY_TEXT);
   }
 
   /**
@@ -161,11 +161,11 @@ class BlockFieldPluginTest extends FastTestBase {
 
     // Check for query parameters.
     $this->drupalGet($node->toUrl(), ['query' => ['cached' => 1]]);
-    $this->assertRaw('cached=1');
+    $this->assertSession()->responseContains('cached=1');
 
     // Check for query parameters.
     $this->drupalGet($node->toUrl(), ['query' => ['cached' => 2]]);
-    $this->assertRaw('cached=2');
+    $this->assertSession()->responseContains('cached=2');
   }
 
 }

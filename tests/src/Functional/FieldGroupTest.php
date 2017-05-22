@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\ds\Tests;
+namespace Drupal\Tests\ds\Functional;
 
 use Drupal\field_group\Tests\FieldGroupTestTrait;
 
@@ -60,9 +60,10 @@ class FieldGroupTest extends FastTestBase {
 
     $this->drupalGet('node/' . $node->id());
 
-    // Test group ids and classes.
-    $this->assertFieldByXPath("//div[contains(@class, 'group-right')]/div[contains(@id, 'wrapper-id')]", NULL, 'Wrapper id set on wrapper div');
-    $this->assertFieldByXPath("//div[contains(@class, 'group-right')]/div[contains(@class, 'test-class')]", NULL, 'Test class set on wrapper div' . 'class="' . $group->group_name . ' test-class');
+    $elements = $this->xpath("//div[contains(@class, 'group-right')]/div");
+
+    $this->assertTrue($elements[0]->hasClass('test-class'));
+    $this->assertEquals($elements[0]->getAttribute('id'), 'wrapper-id');
   }
 
 }

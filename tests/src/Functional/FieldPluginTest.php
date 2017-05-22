@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\ds\Tests;
+namespace Drupal\Tests\ds\Functional;
 
 /**
  * Tests DS field plugins.
@@ -23,9 +23,9 @@ class FieldPluginTest extends FastTestBase {
 
     // Find the two field plugins from the test module on the node type.
     $this->drupalGet('admin/structure/types/manage/article/display');
-    $this->assertText('Test field plugin', 'Test field found on node.');
+    $this->assertSession()->pageTextContains('Test field plugin');
     // One is altered by hook_ds_fields_info_alter()
-    $this->assertText('Field altered', 'Test field altered found on node.');
+    $this->assertSession()->pageTextContains('Field altered');
 
     $empty = [];
     $edit = ['layout' => 'ds_2col_stacked'];
@@ -33,8 +33,8 @@ class FieldPluginTest extends FastTestBase {
 
     // Fields can not be found on user.
     $this->drupalGet('admin/config/people/accounts/display');
-    $this->assertNoText('Test code field from plugin', 'Test field not found on user.');
-    $this->assertNoText('Field altered', 'Test field altered not found on user.');
+    $this->assertSession()->pageTextNotContains('Test code field from plugin');
+    $this->assertSession()->pageTextNotContains('Field altered');
 
     // Select layout.
     $this->dsSelectLayout();
@@ -71,20 +71,20 @@ class FieldPluginTest extends FastTestBase {
     $node = $this->drupalCreateNode($settings);
     $this->drupalGet('node/' . $node->id());
 
-    $this->assertRaw('group-left', 'Template found (region left)');
-    $this->assertRaw('group-right', 'Template found (region right)');
-    $this->assertText('Test field plugin on node ' . $node->id(), 'Test field plugin found');
-    $this->assertText('Test row one of multiple field plugin on node ' . $node->id(), 'First item of multiple field plugin found');
-    $this->assertText('Test row two of multiple field plugin on node ' . $node->id(), 'Second item of multiple field plugin found');
-    $this->assertText('Test field plugin that returns an empty string', 'Test field plugin that returns an empty string is visible.');
-    $this->assertNoText('Test field plugin that returns FALSE', 'Test field plugin that returns FALSE is not visible.');
-    $this->assertNoText('Test field plugin that returns NULL', 'Test field plugin that returns NULL is not visible.');
-    $this->assertNoText('Test field plugin that returns nothing', 'Test field plugin that returns nothing is not visible.');
-    $this->assertNoText('Test field plugin that returns an empty array', 'Test field plugin that returns an empty array is not visible.');
-    $this->assertText('Test field plugin that returns zero as an integer', 'Test field plugin that returns zero as an integer is visible.');
-    $this->assertText('Test field plugin that returns zero as a string', 'Test field plugin that returns zero as a string is visible.');
-    $this->assertText('Test field plugin that returns zero as a floating point number', 'Test field plugin that returns zero as a floating point number is visible.');
-    $this->assertText('alternative article title');
+    $this->assertSession()->responseContains('group-left');
+    $this->assertSession()->responseContains('group-right');
+    $this->assertSession()->pageTextContains('Test field plugin on node ' . $node->id());
+    $this->assertSession()->pageTextContains('Test row one of multiple field plugin on node ' . $node->id());
+    $this->assertSession()->pageTextContains('Test row two of multiple field plugin on node ' . $node->id());
+    $this->assertSession()->pageTextContains('Test field plugin that returns an empty string');
+    $this->assertSession()->pageTextNotContains('Test field plugin that returns FALSE');
+    $this->assertSession()->pageTextNotContains('Test field plugin that returns NULL');
+    $this->assertSession()->pageTextNotContains('Test field plugin that returns nothing');
+    $this->assertSession()->pageTextNotContains('Test field plugin that returns an empty array');
+    $this->assertSession()->pageTextContains('Test field plugin that returns zero as an integer');
+    $this->assertSession()->pageTextContains('Test field plugin that returns zero as a string');
+    $this->assertSession()->pageTextContains('Test field plugin that returns zero as a floating point number');
+    $this->assertSession()->pageTextContains('alternative article title');
   }
 
 }

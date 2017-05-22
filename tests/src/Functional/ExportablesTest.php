@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\ds\Tests;
+namespace Drupal\Tests\ds\Functional;
 
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
 
@@ -29,9 +29,9 @@ class ExportablesTest extends FastTestBase {
 
     // Look for default custom field.
     $this->drupalGet('admin/structure/ds/fields');
-    $this->assertText('Exportable field');
+    $this->assertSession()->pageTextContains('Exportable field');
     $this->drupalGet('admin/structure/types/manage/article/display');
-    $this->assertText('Exportable field');
+    $this->assertSession()->pageTextContains('Exportable field');
 
     $settings = [
       'type' => 'article',
@@ -39,18 +39,18 @@ class ExportablesTest extends FastTestBase {
     ];
     $node = $this->drupalCreateNode($settings);
     $this->drupalGet('node/' . $node->id());
-    $this->assertRaw('group-left', 'Left region found');
-    $this->assertRaw('group-right', 'Right region found');
-    $this->assertNoRaw('group-header', 'No header region found');
-    $this->assertNoRaw('group-footer', 'No footer region found');
+    $this->assertSession()->responseContains('group-left');
+    $this->assertSession()->responseContains('group-right');
+    $this->assertSession()->responseNotContains('group-header');
+    $this->assertSession()->responseNotContains('group-footer');
     $link = $this->xpath('//h3/a[text()=:text]', [
       ':text' => 'Exportable',
     ]);
-    $this->assertEqual(count($link), 1, 'Default title with h3 found');
+    $this->assertEquals(count($link), 1, 'Default title with h3 found');
     $link = $this->xpath('//a[text()=:text]', [
       ':text' => 'Read more',
     ]);
-    $this->assertEqual(count($link), 1, 'Default read more found');
+    $this->assertEquals(count($link), 1, 'Default read more found');
 
     // Override default layout.
     $layout = [
@@ -77,10 +77,10 @@ class ExportablesTest extends FastTestBase {
     $this->dsConfigureUi($fields);
 
     $this->drupalGet('node/' . $node->id());
-    $this->assertRaw('group-left', 'Left region found');
-    $this->assertRaw('group-right', 'Right region found');
-    $this->assertRaw('group-header', 'Header region found');
-    $this->assertRaw('group-footer', 'Footer region found');
+    $this->assertSession()->responseContains('group-left');
+    $this->assertSession()->responseContains('group-right');
+    $this->assertSession()->responseContains('group-header');
+    $this->assertSession()->responseContains('group-footer');
   }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\ds\Tests;
+namespace Drupal\Tests\ds\Functional;
 
 /**
  * Tests DS layout plugins.
@@ -15,8 +15,8 @@ class LayoutPluginTest extends FastTestBase {
   public function testFieldPlugin() {
     // Assert our 2 tests layouts are found.
     $this->drupalGet('admin/structure/types/manage/article/display');
-    $this->assertRaw('Test One column', 'Test One column layout found');
-    $this->assertRaw('Test Two column', 'Test Two column layout found');
+    $this->assertSession()->responseContains('Test One column');
+    $this->assertSession()->responseContains('Test Two column');
 
     $layout = [
       'layout' => 'dstest_2col',
@@ -43,9 +43,9 @@ class LayoutPluginTest extends FastTestBase {
     $node = $this->drupalCreateNode($settings);
 
     $this->drupalGet('node/' . $node->id());
-    $this->assertRaw('group-left', 'Template found (region left)');
-    $this->assertRaw('group-right', 'Template found (region right)');
-    $this->assertRaw('dstest-2col.css', 'Css file included');
+    $this->assertSession()->responseContains('group-left');
+    $this->assertSession()->responseContains('group-right');
+    $this->assertSession()->responseContains('dstest-2col.css');
 
     // Alter a region.
     $settings = [
@@ -54,7 +54,7 @@ class LayoutPluginTest extends FastTestBase {
     ];
     $node = $this->drupalCreateNode($settings);
     $this->drupalGet('node/' . $node->id());
-    $this->assertRaw('cool!', 'Region altered');
+    $this->assertSession()->responseContains('cool!');
   }
 
   /**
@@ -100,7 +100,7 @@ class LayoutPluginTest extends FastTestBase {
     $this->drupalGet('node/' . $node->id());
 
     // Check we don't have empty wrappers.
-    $this->assertNoRaw('<>', 'No empty wrappers found');
+    $this->assertSession()->responseNotContains('<>');
 
     // Select 1 col wrapper.
     $assert = [
@@ -114,9 +114,9 @@ class LayoutPluginTest extends FastTestBase {
     $this->drupalGet('node/' . $node->id());
 
     // Check we don't have empty wrappers.
-    $xpath = $this->xpath('//div[@class="node node--type-article node--view-mode-full ds-1col clearfix"]');
-    $this->assertTrue(count($xpath) == 1);
-    $this->assertTrimEqual($xpath[0]->div->p, $node->get('body')->value);
+    $elements = $this->xpath('//div[@class="node node--type-article node--view-mode-full ds-1col clearfix"]/div/p');
+    $this->assertTrue(count($elements) == 1);
+    $this->assertTrimEqual($elements[0]->getText(), $node->get('body')->value);
 
     // Switch theme.
     $this->container->get('theme_installer')->install(['ds_test_layout_theme']);
@@ -126,10 +126,10 @@ class LayoutPluginTest extends FastTestBase {
 
     // Go to the node.
     $this->drupalGet('node/' . $node->id());
-    $this->assertRaw('id="overridden-ds-1-col-template"');
-    $xpath = $this->xpath('//div[@class="node node--type-article node--view-mode-full ds-1col clearfix"]');
-    $this->assertTrue(count($xpath) == 1);
-    $this->assertTrimEqual($xpath[0]->div->p, $node->get('body')->value);
+    $this->assertSession()->responseContains('id="overridden-ds-1-col-template"');
+    $elements = $this->xpath('//div[@class="node node--type-article node--view-mode-full ds-1col clearfix"]/div/p');
+    $this->assertTrue(count($elements) == 1);
+    $this->assertTrimEqual($elements[0]->getText(), $node->get('body')->value);
 
   }
 

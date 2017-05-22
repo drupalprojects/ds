@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\ds\Tests;
+namespace Drupal\Tests\ds\Functional;
 
 /**
  * Tests for testing the hidden region option.
@@ -34,7 +34,7 @@ class HiddenRegionTest extends FastTestBase {
 
     // Test field not printed.
     $this->drupalGet('node/' . $node->id());
-    $this->assertNoText('Test field plugin on node ' . $node->id(), 'Test code field not found');
+    $this->assertSession()->pageTextNotContains('Test field plugin on node ' . $node->id());
 
     // Configure fields.
     $fields = [
@@ -45,7 +45,7 @@ class HiddenRegionTest extends FastTestBase {
 
     // Test field printed.
     $this->drupalGet('node/' . $node->id());
-    $this->assertText('Test field plugin on node ' . $node->id(), 'Test code field not found');
+    $this->assertSession()->pageTextContains('Test field plugin on node ' . $node->id());
   }
 
 }

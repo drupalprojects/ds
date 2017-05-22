@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\ds\Tests;
+namespace Drupal\Tests\ds\Functional;
 
 use Drupal\Core\Cache\Cache;
 use Drupal\simpletest\NodeCreationTrait;
@@ -40,7 +40,7 @@ class DsFieldCacheTest extends FastTestBase {
     // doesn't appear.
     $node = $this->createNode(['type' => 'article']);
     $this->drupalGet($node->toUrl());
-    $this->assertNoText('DsField Shown');
+    $this->assertSession()->pageTextNotContains('DsField Shown');
 
     // Enable our toggle flag and invalidate the cache so that our field should
     // appear.
@@ -49,7 +49,7 @@ class DsFieldCacheTest extends FastTestBase {
 
     // Visit the node and assert that it now appears.
     $this->drupalGet($node->toUrl());
-    $this->assertText('DsField Shown');
+    $this->assertSession()->pageTextContains('DsField Shown');
   }
 
 }

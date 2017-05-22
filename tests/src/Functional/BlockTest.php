@@ -1,8 +1,9 @@
 <?php
 
-namespace Drupal\ds\Tests;
+namespace Drupal\Tests\ds\Functional;
 
 use Drupal\block_content\Entity\BlockContent;
+use Drupal\user\Entity\User;
 
 /**
  * Tests for the manage display tab in Display Suite.
@@ -62,15 +63,15 @@ class BlockTest extends FastTestBase {
       'label' => 'Basic Block',
       'id' => 'basic',
     ];
-    $this->drupalPostForm('admin/structure/block/block-content/types/add', $edit, t('Save'), []);
-    $this->assertText('Custom block type Basic Block has been added.', 'Basic block type added');
+    $this->drupalPostForm('admin/structure/block/block-content/types/add', $edit,'Save', []);
+    $this->assertSession()->pageTextContains('Custom block type Basic Block has been added.');
 
     // Create a basic block.
     $edit = [];
     $edit['info[0][value]'] = 'Test Block';
     $edit['body[0][value]'] = $this->randomMachineName(16);
     $this->drupalPostForm('block/add/basic', $edit, t('Save'), []);
-    $this->assertText('Basic Block Test Block has been created.', 'Basic Block Test Block created');
+    $this->assertSession()->pageTextContains('Basic Block Test Block has been created.');
 
     // Place the block.
     $instance = [
@@ -95,11 +96,11 @@ class BlockTest extends FastTestBase {
 
     // View the block.
     $this->drupalGet('<front>');
-    $this->assertText('Test Block', 'Test block found');
+    $this->assertSession()->pageTextContains('Test Block');
     $xpath = $this->xpath('//div[@class="region region-sidebar-first"]/div/div[@class="block-content block-content--type-basic block-content--view-mode-full ds-2col clearfix"]/div[@class="group-left"]/div[@class="field field--name-block-description field--type-ds field--label-hidden field__item"]/h2');
-    $this->assertEqual(count($xpath), 1, 'Description in group-left');
+    $this->assertEquals(count($xpath), 1, 'Description in group-left');
     $xpath = $this->xpath('//div[@class="region region-sidebar-first"]/div/div[@class="block-content block-content--type-basic block-content--view-mode-full ds-2col clearfix"]/div[@class="group-right"]/div[@class="clearfix text-formatted field field--name-body field--type-text-with-summary field--label-hidden field__item"]/p');
-    $this->assertEqual(count($xpath), 1, 'Body in group-right');
+    $this->assertEquals(count($xpath), 1, 'Body in group-right');
   }
 
 }

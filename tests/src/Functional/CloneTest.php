@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\ds\Tests;
+namespace Drupal\Tests\ds\Functional;
 
 /**
  * Tests for the manage display tab in Display Suite.
@@ -30,19 +30,22 @@ class CloneTest extends FastTestBase {
   public function testClone() {
     // Go to the teaser display mode and select a DS layout.
     $this->dsSelectLayout([], [], 'admin/structure/types/manage/article/display/teaser');
-    $this->assertText('Two column stacked layout');
+    $this->assertSession()->pageTextContains('Two column stacked layout');
 
     // Go back to the default view mode.
     $this->drupalGet('admin/structure/types/manage/article/display');
 
     // Clone layout, this will clone from the teaser view mode.
-    $this->drupalPostForm(NULL, [], 'Clone layout');
+    $page = $this->getSession()->getPage();
+    $button = $page->findById('edit-clone-submit');
+    $button->click();
 
     // Check for message.
-    $this->assertText('The layout has been cloned.');
+    $this->assertSession()->pageTextContains('The layout has been cloned.');
 
     // Check that this now also has the expected region layout.
-    $this->assertOptionSelected('edit-layout', 'ds_2col_stacked');
+    $option_field = $this->assertSession()->optionExists('edit-layout', 'ds_2col_stacked');
+    $this->assertTrue($option_field->hasAttribute('selected'));
   }
 
 }

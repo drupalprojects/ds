@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\ds\Tests;
+namespace Drupal\Tests\ds\Functional;
 
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
 
@@ -34,7 +34,7 @@ class LayoutClassesTest extends FastTestBase {
     // Check that the ds_3col_equal_width layout is not available (through the
     // alter).
     $this->drupalGet('admin/structure/types/manage/article/display');
-    $this->assertNoRaw('ds_3col_stacked_equal_width', 'ds_3col_stacked_equal_width not available');
+    $this->assertSession()->responseNotContains('ds_3col_stacked_equal_width');
 
     // Create code and block field.
     $this->dsCreateTokenField();
@@ -72,11 +72,12 @@ class LayoutClassesTest extends FastTestBase {
 
     // Assert the two extra fields are found.
     $this->drupalGet('admin/structure/types/manage/article/display');
-    $this->assertRaw('ds_extras_extra_test_field');
-    $this->assertRaw('ds_extras_second_field');
+    $this->assertSession()->responseContains('ds_extras_extra_test_field');
+    $this->assertSession()->responseContains('ds_extras_second_field');
 
     // Assert we have configuration.
     $entity_manager = \Drupal::entityTypeManager();
+    /** @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface $entity_display */
     $entity_display = $entity_manager->getStorage('entity_view_display')->load('node.article.default');
     $data = $entity_display->getThirdPartySettings('ds');
 
@@ -101,27 +102,27 @@ class LayoutClassesTest extends FastTestBase {
     $this->drupalGet('node/' . $node->id());
 
     // Assert default classes.
-    $this->assertRaw('node node--type-article node--view-mode-full', 'Default node classes are added');
+    $this->assertSession()->responseContains('node node--type-article node--view-mode-full');
 
     // Assert regions.
-    $this->assertRaw('group-header', 'Template found (region header)');
-    $this->assertRaw('class_name_1 group-header', 'Class found (class_name_1)');
-    $this->assertRaw('group-left', 'Template found (region left)');
-    $this->assertRaw('group-right', 'Template found (region right)');
-    $this->assertRaw('group-footer', 'Template found (region footer)');
-    $this->assertRaw('class_name_2 group-footer', 'Class found (class_name_2)');
+    $this->assertSession()->responseContains('group-header');
+    $this->assertSession()->responseContains('class_name_1 group-header');
+    $this->assertSession()->responseContains('group-left');
+    $this->assertSession()->responseContains('group-right');
+    $this->assertSession()->responseContains('group-footer');
+    $this->assertSession()->responseContains('class_name_2 group-footer');
 
     // Assert custom fields.
-    $this->assertRaw('field--name-dynamic-token-fieldnode-test-field', t('Custom field found'));
-    $this->assertRaw('field--name-dynamic-block-fieldnode-test-block-field', t('Custom block field found'));
+    $this->assertSession()->responseContains('field--name-dynamic-token-fieldnode-test-field');
+    $this->assertSession()->responseContains('field--name-dynamic-block-fieldnode-test-block-field');
 
-    $this->assertRaw('Submitted by', t('Submitted field found'));
-    $this->assertText('This is an extra field made available through "Extra fields" functionality.');
+    $this->assertSession()->responseContains('Submitted by');
+    $this->assertSession()->pageTextContains('This is an extra field made available through "Extra fields" functionality.');
 
     // Test HTML5 wrappers.
-    $this->assertNoRaw('<header class="class_name_1 group-header', 'Header not found.');
-    $this->assertNoRaw('<footer class="group-right', 'Footer not found.');
-    $this->assertNoRaw('<article', 'Article not found.');
+    $this->assertSession()->responseNotContains('<header class="class_name_1 group-header');
+    $this->assertSession()->responseNotContains('<footer class="group-right');
+    $this->assertSession()->responseNotContains('<article');
     $wrappers = [
       'layout_configuration[region_wrapper][header]' => 'header',
       'layout_configuration[region_wrapper][right]' => 'footer',
@@ -129,9 +130,9 @@ class LayoutClassesTest extends FastTestBase {
     ];
     $this->dsConfigureUi($wrappers);
     $this->drupalGet('node/' . $node->id());
-    $this->assertRaw('<header class="class_name_1 group-header', 'Header found.');
-    $this->assertRaw('<footer class="group-right', 'Footer found.');
-    $this->assertRaw('<article', 'Article found.');
+    $this->assertSession()->responseContains('<header class="class_name_1 group-header');
+    $this->assertSession()->responseContains('<footer class="group-right');
+    $this->assertSession()->responseContains('<article');
 
     // Remove all the node classes.
     $edit = ['entity_classes' => 'no_classes'];
@@ -139,7 +140,7 @@ class LayoutClassesTest extends FastTestBase {
     $this->drupalGet('node/' . $node->id());
 
     // Assert that there are no entity classes.
-    $this->assertNoRaw('node node--type-article node--view-mode-full', 'Default node classes are not added');
+    $this->assertSession()->responseNotContains('node node--type-article node--view-mode-full');
 
     // Only show view mode (deprecated).
     $edit = ['entity_classes' => 'old_view_mode'];
@@ -147,7 +148,7 @@ class LayoutClassesTest extends FastTestBase {
     $this->drupalGet('node/' . $node->id());
 
     // Assert that the old view mode class name is added (deprecated).
-    $this->assertRaw('view-mode-full', 'Only view mode is printed');
+    $this->assertSession()->responseContains('view-mode-full');
 
     // Let's create a block field, enable the full mode first.
     $edit = ['display_modes_custom[full]' => '1'];
@@ -172,7 +173,7 @@ class LayoutClassesTest extends FastTestBase {
       'new_block_region_key' => 'block_region',
     ];
     $this->drupalPostForm('admin/structure/types/manage/article/display/full', $edit, t('Save'));
-    $this->assertRaw('<td colspan="9">' . t('Block region') . '</td>', 'Block region found');
+    $this->assertSession()->responseContains('<td colspan="9">' . t('Block region') . '</td>');
 
     // Configure fields.
     $fields = [
@@ -186,8 +187,8 @@ class LayoutClassesTest extends FastTestBase {
     // Change layout via admin/structure/ds/layout-change.
     // First verify that header and footer are not here.
     $this->drupalGet('admin/structure/types/manage/article/display/full');
-    $this->assertNoRaw('<td colspan="8">' . t('Header') . '</td>', 'Header region not found');
-    $this->assertNoRaw('<td colspan="8">' . t('Footer') . '</td>', 'Footer region not found');
+    $this->assertSession()->responseNotContains('<td colspan="8">' . t('Header') . '</td>');
+    $this->assertSession()->responseNotContains('<td colspan="8">' . t('Footer') . '</td>');
 
     // Remap the regions.
     $edit = [
@@ -199,12 +200,13 @@ class LayoutClassesTest extends FastTestBase {
     $this->drupalGet('admin/structure/types/manage/article/display/full');
 
     // Verify new regions.
-    $this->assertRaw('<td colspan="9">' . t('Header') . '</td>', 'Header region found');
-    $this->assertRaw('<td colspan="9">' . t('Footer') . '</td>', 'Footer region found');
-    $this->assertRaw('<td colspan="9">' . t('Block region') . '</td>', 'Block region found');
+    $this->assertSession()->responseContains('<td colspan="9">' . t('Header') . '</td>');
+    $this->assertSession()->responseContains('<td colspan="9">' . t('Footer') . '</td>');
+    $this->assertSession()->responseContains('<td colspan="9">' . t('Block region') . '</td>');
 
     // Verify settings.
-    $entity_display = EntityViewDisplay::load('node.article.full', TRUE);
+    /** @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface $entity_display */
+    $entity_display = EntityViewDisplay::load('node.article.full');
     $data = $entity_display->getThirdPartySettings('ds');
     $this->assertTrue(in_array('node_author', $data['regions']['header']), t('Author is in header'));
     $this->assertTrue(in_array('node_links', $data['regions']['header']), t('Links field is in header'));
@@ -217,10 +219,13 @@ class LayoutClassesTest extends FastTestBase {
       'layout' => '_none',
       'display_modes_custom[full]' => FALSE,
     ];
-    $this->drupalPostForm('admin/structure/types/manage/article/display', $edit, t('Save'));
-    $this->assertFieldsByValue($this->xpath('//*[@id="edit-fields-body-region"]'), 'content', 'Body field is in the content region');
+    $this->drupalPostForm('admin/structure/types/manage/article/display', $edit,'Save');
+
+    $elements = $this->xpath('//*[@id="edit-fields-body-region"]');
+
+    $this->assertTrue($elements[0]->find('xpath', '//option[@value = "content" and @selected = "selected"]'));
     $this->drupalGet('node/' . $node->id());
-    $this->assertNoText('Test code field on node 1', 'No ds field from full view mode layout');
+    $this->assertSession()->pageTextNotContains('Test code field on node 1');
   }
 
 }

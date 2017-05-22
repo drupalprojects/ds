@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\ds\Tests;
+namespace Drupal\Tests\ds\Functional;
 
 /**
  * Tests for Rdf integration.
@@ -32,7 +32,8 @@ class RdfTest extends FastTestBase {
 
     // Look at node and verify the rdf tags are available.
     $this->drupalGet('node/' . $node->id());
-    $this->assertRaw('typeof="schema:Article', 'RDF tag found on the node wrapper');
+
+    $this->assertSession()->responseContains('typeof="schema:Article');
   }
 
 }
