@@ -598,11 +598,20 @@ function ds_preprocess_ds_layout(&$variables) {
 
       // Let other modules alter the ds array before rendering.
       $context = [
-        'entity' => isset($variables[$entity_type_id]) ? $variables[$entity_type_id] : (isset($variables['content']['#' . $entity_type_id]) ? $variables['content']['#' . $entity_type_id] : ''),
+        'entity' => NULL,
         'entity_type' => $variables['content']['#entity_type'],
         'bundle' => $variables['content']['#bundle'],
         'view_mode' => $variables['content']['#view_mode'],
       ];
+
+      // Special case for User entity, becase $variables['user'] contains the currently logged in user
+      if($entity_type_id !== 'user' && isset($variables[$entity_type_id])) {
+        $context['entity'] = $variables[$entity_type_id];
+      }
+      elseif (isset($variables['content']['#' . $entity_type_id])) {
+        $context['entity'] = $variables['content']['#' . $entity_type_id];
+      }
+
       \Drupal::moduleHandler()->alter('ds_pre_render', $variables['content'], $context, $variables);
     }
   }
