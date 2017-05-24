@@ -30,7 +30,7 @@ class DsField extends Plugin {
   /**
    * The entity type this plugin should work on.
    *
-   * @var string
+   * @var string|array
    */
   public $entity_type;
 

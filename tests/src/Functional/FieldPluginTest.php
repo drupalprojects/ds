@@ -61,6 +61,8 @@ class FieldPluginTest extends FastTestBase {
       'fields[test_field_zero_string][label]' => 'inline',
       'fields[test_field_zero_float][region]' => 'right',
       'fields[test_field_zero_float][label]' => 'inline',
+      'fields[test_multiple_entity_test_field][region]' => 'right',
+      'fields[test_multiple_entity_test_field][label]' => 'inline',
     ];
 
     $this->dsSelectLayout();
@@ -85,6 +87,19 @@ class FieldPluginTest extends FastTestBase {
     $this->assertSession()->pageTextContains('Test field plugin that returns zero as a string');
     $this->assertSession()->pageTextContains('Test field plugin that returns zero as a floating point number');
     $this->assertSession()->pageTextContains('alternative article title');
+    $this->assertSession()->pageTextContains('Multiple entity test field plugin');
+
+    // Check if the multiple entity test field appears on user entities
+    $this->dsSelectLayout([], [],'admin/config/people/accounts/display');
+    $fields = [
+      'fields[test_multiple_entity_test_field][region]' => 'right',
+      'fields[test_multiple_entity_test_field][label]' => 'inline',
+    ];
+
+    $this->dsConfigureUi($fields,'admin/config/people/accounts/display');
+    $this->drupalGet('user/' . $this->adminUser->id());
+
+    $this->assertSession()->pageTextContains('Multiple entity test field plugin');
   }
 
 }

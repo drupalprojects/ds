@@ -27,7 +27,14 @@ class Ds {
       foreach (\Drupal::service('plugin.manager.ds')->getDefinitions() as $plugin_id => $plugin) {
         // Needed to get derivatives working.
         $plugin['plugin_id'] = $plugin_id;
-        $static_fields[$plugin['entity_type']][$plugin_id] = $plugin;
+        if (is_array($plugin['entity_type'])) {
+          foreach ($plugin['entity_type'] as $plugin_entity_type) {
+            $static_fields[$plugin_entity_type][$plugin_id] = $plugin;
+          }
+        }
+        else {
+          $static_fields[$plugin['entity_type']][$plugin_id] = $plugin;
+        }
       }
     }
 
