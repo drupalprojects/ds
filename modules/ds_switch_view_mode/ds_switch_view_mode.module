@@ -39,7 +39,7 @@ function ds_switch_view_mode_entity_view_mode_alter(&$view_mode, EntityInterface
   if ($entity->getEntityTypeId() == 'node' && node_is_page($entity) && !empty($entity->ds_switch->value) && $view_mode == 'full') {
     $original_view_mode = $view_mode;
     $view_mode = $entity->ds_switch->value;
-    \Drupal::moduleHandler()->alter('ds_swith_view_mode', $view_mode, $original_view_mode, $entity);
+    \Drupal::moduleHandler()->alter('ds_switch_view_mode', $view_mode, $original_view_mode, $entity);
   }
 }
 
