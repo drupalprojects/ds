@@ -1114,6 +1114,9 @@ function _ds_field_ui_fields($entity_type, $bundle, $view_mode, array &$form, Fo
   }
 
   foreach ($fields as $key => $field) {
+    if (isset($field_settings[$key]['formatter'])) {
+      $field['formatter'] = $field_settings[$key]['formatter'];
+    }
     $configuration = [
       'field' => $field,
       'field_name' => $key,
