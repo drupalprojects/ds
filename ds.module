@@ -1097,4 +1097,11 @@ function ds_entity_type_alter(array &$entity_types) {
       }
     }
   }
+  // Undo field_layout changes to EntityViewDisplay.
+  if (\Drupal::moduleHandler()->moduleExists('field_layout')) {
+    $entity_types['entity_view_display']->setClass($entity_types['entity_view_display']->getOriginalClass());
+    if (\Drupal::moduleHandler()->moduleExists('field_ui')) {
+      $entity_types['entity_view_display']->setFormClass('edit', 'Drupal\field_ui\Form\EntityViewDisplayEditForm');
+    }
+  }
 }
