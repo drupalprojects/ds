@@ -155,10 +155,7 @@ class Ds {
    * admin/structure/ds/emergency.
    */
   public static function isDisabled() {
-    if (\Drupal::state()->get('ds.disabled', FALSE)) {
-      return TRUE;
-    }
-    return FALSE;
+    return \Drupal::state()->get('ds.disabled', FALSE);
   }
 
   /**
