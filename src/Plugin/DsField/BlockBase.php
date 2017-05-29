@@ -111,13 +111,21 @@ abstract class BlockBase extends DsFieldBase implements ContainerFactoryPluginIn
 
       // Merge cache contexts, tags and max-age.
       if ($contexts = $block->getCacheContexts()) {
-        $render_element['#cache']['contexts'] = (is_array($block_build['#cache']['contexts']) ? $block_build['#cache']['contexts'] : []);
-        $render_element['#cache']['contexts'] = array_unique(array_merge($block_build['#cache']['contexts'], $contexts));
+        $render_element['#cache']['contexts'] = [];
+        if (isset($block_build['#cache']) && is_array($block_build['#cache']['contexts'])) {
+          $render_element['#cache']['contexts'] = $block_build['#cache']['contexts'];
+        }
+
+        $render_element['#cache']['contexts'] = array_unique(array_merge($render_element['#cache']['contexts'], $contexts));
       }
 
       if ($tags = $block->getCacheTags()) {
-        $render_element['#cache']['tags'] = (is_array($block_build['#cache']['tags']) ? $block_build['#cache']['tags'] : []);
-        $render_element['#cache']['tags'] = array_unique(array_merge($block_build['#cache']['tags'], $tags));
+        $render_element['#cache']['tags'] = [];
+        if (isset($block_build['#cache']) && is_array($block_build['#cache']['tags'])) {
+          $render_element['#cache']['tags'] = $block_build['#cache']['tags'];
+        }
+
+        $render_element['#cache']['tags'] = array_unique(array_merge($render_element['#cache']['tags'], $tags));
       }
 
       // Add the block base config cache tag.
