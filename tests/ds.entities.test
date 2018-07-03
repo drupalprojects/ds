@@ -131,7 +131,7 @@ class dsNodeTests extends dsBaseTest {
     $this->assertRaw('group-footer', 'Template found (region footer)');
     $this->assertRaw('group-left', 'Template found (region left)');
     $this->assertRaw('group-right', 'Template found (region right)');
-    $this->assertPattern('/<div[^>]*>Submitted[^<]*<a[^>]+href="' . preg_quote(base_path(), '/') . 'user\/' . $node_author->uid . '"[^>]*>' . check_plain($node_author->name) . '<\/a>.<\/div>/', t('Submitted by line found'));
+    $this->assertPattern('/<div[^>]*>Submitted[^<]*<a[^>]+href=".*' . 'user\/' . $node_author->uid . '"[^>]*>' . check_plain($node_author->name) . '<\/a>.<\/div>/', t('Submitted by line found'));
 
     // Configure teaser layout.
     $teaser = array(
@@ -543,7 +543,7 @@ class dsNodeTests extends dsBaseTest {
     $this->dsEditFormatterSettings($edit);
     $this->drupalGet('node/' . $node->nid);
     $this->assertRaw("<div class=\"group-right\">
-    <span class=\"even fi-class\"><p>" . $body_field . "</p>
+    <span class=\"odd fi-class first last\"><p>" . $body_field . "</p>
 </span>  </div>");
 
     // With fis and fi.
@@ -560,7 +560,7 @@ class dsNodeTests extends dsBaseTest {
     $this->dsEditFormatterSettings($edit);
     $this->drupalGet('node/' . $node->nid);
     $this->assertRaw("<div class=\"group-right\">
-    <div class=\"fi-class-2\"><div class=\"even fi-class\"><p>" . $body_field . "</p>
+    <div class=\"fi-class-2\"><div class=\"odd fi-class first last\"><p>" . $body_field . "</p>
 </div></div>  </div>");
     // With all wrappers.
     $edit = array(
@@ -579,7 +579,7 @@ class dsNodeTests extends dsBaseTest {
     $this->dsEditFormatterSettings($edit);
     $this->drupalGet('node/' . $node->nid);
     $this->assertRaw("<div class=\"group-right\">
-    <div class=\"ow-class\"><div class=\"fi-class-2\"><span class=\"even fi-class\"><p>" . $body_field . "</p>
+    <div class=\"ow-class\"><div class=\"fi-class-2\"><span class=\"odd fi-class first last\"><p>" . $body_field . "</p>
 </span></div></div>  </div>");
 
     // With all wrappers and attributes.
@@ -600,7 +600,7 @@ class dsNodeTests extends dsBaseTest {
     $this->dsEditFormatterSettings($edit);
     $this->drupalGet('node/' . $node->nid);
     $this->assertRaw("<div class=\"group-right\">
-    <div class=\"ow-class\" name=\"ow-att\"><div class=\"fi-class-2\" name=\"fis-att\"><span class=\"even fi-class\" name=\"fi-at\"><p>" . $body_field . "</p>
+    <div class=\"ow-class\" name=\"ow-att\"><div class=\"fi-class-2\" name=\"fis-att\"><span class=\"odd fi-class first last\" name=\"fi-at\"><p>" . $body_field . "</p>
 </span></div></div>  </div>");
 
     // Remove attributes.
@@ -624,37 +624,37 @@ class dsNodeTests extends dsBaseTest {
     $this->entitiesSetLabelClass('above');
     $this->drupalGet('node/' . $node->nid);
     $this->assertRaw("<div class=\"group-right\">
-    <div class=\"ow-class\"><div class=\"label-above\">Body:&nbsp;</div><div class=\"fi-class-2\"><span class=\"even fi-class\"><p>" . $body_field . "</p>
+    <div class=\"ow-class\"><div class=\"label-above\">Body:&nbsp;</div><div class=\"fi-class-2\"><span class=\"odd fi-class first last\"><p>" . $body_field . "</p>
 </span></div></div>  </div>");
 
     $this->entitiesSetLabelClass('inline');
     $this->drupalGet('node/' . $node->nid);
     $this->assertRaw("<div class=\"group-right\">
-    <div class=\"ow-class\"><div class=\"label-inline\">Body:&nbsp;</div><div class=\"fi-class-2\"><span class=\"even fi-class\"><p>" . $body_field . "</p>
+    <div class=\"ow-class\"><div class=\"label-inline\">Body:&nbsp;</div><div class=\"fi-class-2\"><span class=\"odd fi-class first last\"><p>" . $body_field . "</p>
 </span></div></div>  </div>");
 
     $this->entitiesSetLabelClass('above', 'My body');
     $this->drupalGet('node/' . $node->nid);
     $this->assertRaw("<div class=\"group-right\">
-    <div class=\"ow-class\"><div class=\"label-above\">My body:&nbsp;</div><div class=\"fi-class-2\"><span class=\"even fi-class\"><p>" . $body_field . "</p>
+    <div class=\"ow-class\"><div class=\"label-above\">My body:&nbsp;</div><div class=\"fi-class-2\"><span class=\"odd fi-class first last\"><p>" . $body_field . "</p>
 </span></div></div>  </div>");
 
     $this->entitiesSetLabelClass('inline', 'My body');
     $this->drupalGet('node/' . $node->nid);
     $this->assertRaw("<div class=\"group-right\">
-    <div class=\"ow-class\"><div class=\"label-inline\">My body:&nbsp;</div><div class=\"fi-class-2\"><span class=\"even fi-class\"><p>" . $body_field . "</p>
+    <div class=\"ow-class\"><div class=\"label-inline\">My body:&nbsp;</div><div class=\"fi-class-2\"><span class=\"odd fi-class first last\"><p>" . $body_field . "</p>
 </span></div></div>  </div>");
 
     $this->entitiesSetLabelClass('inline', 'My body', '', TRUE);
     $this->drupalGet('node/' . $node->nid);
     $this->assertRaw("<div class=\"group-right\">
-    <div class=\"ow-class\"><div class=\"label-inline\">My body</div><div class=\"fi-class-2\"><span class=\"even fi-class\"><p>" . $body_field . "</p>
+    <div class=\"ow-class\"><div class=\"label-inline\">My body</div><div class=\"fi-class-2\"><span class=\"odd fi-class first last\"><p>" . $body_field . "</p>
 </span></div></div>  </div>");
 
     $this->entitiesSetLabelClass('hidden');
     $this->drupalGet('node/' . $node->nid);
     $this->assertRaw("<div class=\"group-right\">
-    <div class=\"ow-class\"><div class=\"fi-class-2\"><span class=\"even fi-class\"><p>" . $body_field . "</p>
+    <div class=\"ow-class\"><div class=\"fi-class-2\"><span class=\"odd fi-class first last\"><p>" . $body_field . "</p>
 </span></div></div>  </div>");
 
     // Test default classes on outer wrapper.
@@ -667,7 +667,7 @@ class dsNodeTests extends dsBaseTest {
     $this->dsEditFormatterSettings($edit);
     $this->drupalGet('node/' . $node->nid);
     $this->assertRaw("<div class=\"group-right\">
-    <div class=\"ow-class field field-name-body field-type-text-with-summary field-label-hidden\"><div class=\"fi-class-2\"><span class=\"even fi-class\"><p>" . $body_field . "</p>
+    <div class=\"ow-class field field-name-body field-type-text-with-summary field-label-hidden\"><div class=\"fi-class-2\"><span class=\"odd fi-class first last\"><p>" . $body_field . "</p>
 </span></div></div>  </div>");
 
     // Test default attributes on field item.
@@ -681,7 +681,7 @@ class dsNodeTests extends dsBaseTest {
     $this->dsEditFormatterSettings($edit);
     $this->drupalGet('node/' . $node->nid);
     $this->assertRaw("<div class=\"group-right\">
-    <div class=\"ow-class field field-name-body field-type-text-with-summary field-label-hidden\"><div class=\"fi-class-2\"><span class=\"even fi-class\"  property=\"content:encoded\"><p>" . $body_field . "</p>
+    <div class=\"ow-class field field-name-body field-type-text-with-summary field-label-hidden\"><div class=\"fi-class-2\"><span class=\"odd fi-class first last\"  property=\"content:encoded\"><p>" . $body_field . "</p>
 </span></div></div>  </div>");
 
     // Use the test field theming function to test that this function is
