@@ -162,7 +162,7 @@ class dsNodeTests extends dsBaseTest {
     $this->assertNoRaw('group-header', 'Template found (no region header)');
     $this->assertNoRaw('group-footer', 'Template found (no region footer)');
 
-    $edit = array('ds_switch' => '');
+    $edit = array('ds_switch' => 'default');
     $this->drupalPost('node/' . $node->nid . '/edit', $edit, t('Save'));
     $this->assertRaw('view-mode-full', 'Switched to full mode again');
 
@@ -225,7 +225,7 @@ class dsNodeTests extends dsBaseTest {
 
     // Go to home page, page title shouldn't bleed here
     // see http://drupal.org/node/1446554.
-    $edit = array('ds_switch' => '');
+    $edit = array('ds_switch' => 'default');
     $this->drupalPost('node/' . $node->nid . '/edit', $edit, t('Save'));
     $edit = array('additional_settings[ds_page_title][ds_page_title_options][page_option_type]' => '2', 'additional_settings[ds_page_title][ds_page_title_options][page_option_title]' => 'Bleed title: %node:type');
     $this->dsConfigureUI($edit, 'admin/structure/types/manage/article/display');
@@ -282,7 +282,7 @@ class dsNodeTests extends dsBaseTest {
 
     // Test formatter limit on article with tags.
     $edit = array(
-      'ds_switch' => '',
+      'ds_switch' => 'default',
       'field_tags[und]' => 'Tag 1, Tag 2'
     );
     $this->drupalPost('node/' . $node->nid . '/edit', $edit, t('Save'));
