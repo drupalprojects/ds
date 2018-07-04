@@ -91,7 +91,8 @@ class BlockFieldPluginTest extends FastTestBase {
       'use_block_title' => '1',
     ];
     $this->drupalPostForm('admin/structure/ds/fields/manage_block/test_block_title_field', $edit, t('Save'));
-    $this->assertSession()->responseContains(t('The field %name has been saved', ['%name' => 'Test block title field']));
+    $text = t('The field %name has been saved', ['%name' => 'Test block title field']);
+    $this->assertSession()->responseContains((string) $text);
 
     // Look at node and verify the block title is overridden.
     $this->drupalGet('node/' . $node->id());

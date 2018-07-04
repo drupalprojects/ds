@@ -7,8 +7,8 @@ use Drupal\field\Tests\EntityReference\EntityReferenceTestTrait;
 use Drupal\field_ui\Tests\FieldUiTestTrait;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\Entity\Vocabulary;
-use Drupal\taxonomy\Tests\TaxonomyTestTrait;
 use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\taxonomy\Functional\TaxonomyTestTrait;
 
 /**
  * Base test for Display Suite.
