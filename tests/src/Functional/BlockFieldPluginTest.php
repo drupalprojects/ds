@@ -12,7 +12,7 @@ use Drupal\ds_test\Plugin\Block\DsTestBlock;
  *
  * @group ds
  */
-class BlockFieldPluginTest extends FastTestBase {
+class BlockFieldPluginTest extends TestBase {
 
   /**
    * Modules to install.

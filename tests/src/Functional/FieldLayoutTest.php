@@ -7,7 +7,7 @@ namespace Drupal\Tests\ds\Functional;
  *
  * @group ds
  */
-class FieldLayoutTest extends FastTestBase {
+class FieldLayoutTest extends TestBase {
 
   /**
    * Modules to install.

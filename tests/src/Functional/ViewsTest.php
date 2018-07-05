@@ -10,7 +10,7 @@ use Drupal\views\ViewExecutable;
  *
  * @group ds
  */
-class ViewsTest extends FastTestBase {
+class ViewsTest extends TestBase {
 
   /**
    * Modules to install.

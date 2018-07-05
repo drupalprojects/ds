@@ -9,7 +9,7 @@ use Drupal\Tests\field_group\Functional\FieldGroupTestTrait;
  *
  * @group ds
  */
-class FieldGroupTest extends FastTestBase {
+class FieldGroupTest extends TestBase {
 
   use FieldGroupTestTrait;
 

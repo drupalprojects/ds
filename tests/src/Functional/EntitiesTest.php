@@ -7,7 +7,7 @@ namespace Drupal\Tests\ds\Functional;
  *
  * @group ds
  */
-class EntitiesTest extends FastTestBase {
+class EntitiesTest extends TestBase {
 
   /**
    * Modules to install.

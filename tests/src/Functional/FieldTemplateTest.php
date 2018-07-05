@@ -9,7 +9,7 @@ use Drupal\Core\Cache\Cache;
  *
  * @group ds
  */
-class FieldTemplateTest extends FastTestBase {
+class FieldTemplateTest extends TestBase {
 
   /**
    * {@inheritdoc}
