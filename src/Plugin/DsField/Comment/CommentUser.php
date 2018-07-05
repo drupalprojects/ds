@@ -60,9 +60,12 @@ class CommentUser extends Entity {
     $user = $this->entityTypeManager
       ->getStorage('user')
       ->load($uid);
-    $build = $this->entityTypeManager
-      ->getViewBuilder('user')
-      ->view($user, $view_mode);
+
+    if ($user) {
+      $build = $this->entityTypeManager
+        ->getViewBuilder('user')
+        ->view($user, $view_mode);
+    }
 
     return $build;
   }
